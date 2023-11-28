@@ -122,9 +122,14 @@ public class RandomForestExample {
     }
 
     private static String preprocessText(String text) {
-        // Implement your text preprocessing here
-        // For example, lowercasing, removing special characters, etc.
-        return text.toLowerCase().replaceAll("[^a-zA-Z0-9\\s]", "");
+        // Lowercase conversion
+        text = text.toLowerCase();
+        // Remove special characters and digits
+        text = text.replaceAll("[^a-zA-Z\\s]", "");
+        // Replace multiple spaces with a single space
+        text = text.replaceAll("\\s+", " ");
+
+        return text.trim(); // Trim leading and trailing spaces
     }
 
     private static Instances[] splitData(Instances data, int percentage) {
