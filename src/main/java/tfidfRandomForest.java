@@ -8,6 +8,10 @@ import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.trees.RandomForest;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.FastVector;
+import weka.classifiers.Evaluation;
 
 import java.io.FileReader;
 import java.util.List;
