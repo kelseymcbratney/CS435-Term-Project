@@ -34,26 +34,26 @@ public class TFIDFJob {
     }
   }
 
-public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
+  public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final static Text word = new Text();
     private final static Text docId = new Text();
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        // Tokenize the document content and emit word counts
-        StringTokenizer itr = new StringTokenizer(value.toString(), ",");
-        String overall = itr.nextToken().trim();
-        String reviewText = itr.nextToken().trim();
+      // Tokenize the document content and emit word counts
+      StringTokenizer itr = new StringTokenizer(value.toString(), ",");
+      String overall = itr.nextToken().trim();
+      String reviewText = itr.nextToken().trim();
 
-        // Assuming you want to tokenize reviewText, you may need to adjust this based
-        // on your specific requirements
-        StringTokenizer tokenizer = new StringTokenizer(reviewText);
-        while (tokenizer.hasMoreTokens()) {
-            word.set(tokenizer.nextToken());
-            docId.set(key.toString());
-            context.write(word, new Text(docId + ":1"));
-        }
+      // Assuming you want to tokenize reviewText, you may need to adjust this based
+      // on your specific requirements
+      StringTokenizer tokenizer = new StringTokenizer(reviewText);
+      while (tokenizer.hasMoreTokens()) {
+        word.set(tokenizer.nextToken());
+        docId.set(key.toString());
+        context.write(word, new Text(docId + ":1"));
+      }
     }
-}
+  }
 
   public static class IDFMapper extends Mapper<Text, Text, Text, Text> {
 
@@ -90,18 +90,33 @@ public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       // Calculate TF-IDF and emit the result
-      // You'll need to implement your TF-IDF calculation logic here
-      // This is a simple example, and you may need to adapt it based on your specific
-      // requirements
-      // TF-IDF = (TF / total words in the document) * log(total documents / documents
-      // containing the word)
-      // For simplicity, this example just concatenates the input values as a string
-      StringBuilder sb = new StringBuilder();
+      int totalDocuments = 0;
+      int documentsWithWord = 0;
+      Map<String, Integer> wordCounts = new HashMap<>();
+
+      // Count the total number of documents and documents containing the word
       for (Text value : values) {
-        sb.append(value.toString()).append(",");
+        totalDocuments++;
+        String[] parts = value.toString().split(":");
+        String documentId = parts[0];
+        int count = Integer.parseInt(parts[1]);
+        wordCounts.put(documentId, count);
+        if (count > 0) {
+          documentsWithWord++;
+        }
       }
-      result.set(sb.toString());
-      context.write(key, result);
+
+      // Calculate TF-IDF and emit the result for each document
+      for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
+        String documentId = entry.getKey();
+        int termFrequency = entry.getValue();
+        double tf = (double) termFrequency / wordCounts.size();
+        double idf = Math.log((double) totalDocuments / documentsWithWord);
+        double tfidf = tf * idf;
+
+        result.set(key.toString() + ":" + tfidf);
+        context.write(new Text(documentId), result);
+      }
     }
   }
 }
