@@ -15,6 +15,7 @@ public class TFIDFJob {
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
     private final Text word = new Text();
     private final Text docId = new Text();
+    private final Text rating = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
     private static int counter = 0; // Counter for generating unique IDs
 
@@ -37,7 +38,8 @@ public class TFIDFJob {
         while (tokenizer.hasMoreTokens()) {
           docId.set(Integer.toString(uniqueId));
           word.set(tokenizer.nextToken());
-          context.write(word, docId);
+          rating.set(overall);
+          context.write(docId, (overall + "," + word));
         }
 
       } catch (Exception e) {
