@@ -48,7 +48,7 @@ public class TFIDFJob {
       }
     }
 
-    public class SumReducer extends Reducer<Text, Text, Text, Text> {
+    public static class SumReducer extends Reducer<Text, Text, Text, Text> {
 
       private final Text result = new Text();
 
