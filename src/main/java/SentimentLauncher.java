@@ -34,7 +34,7 @@ public class SentimentLauncher {
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1] + "/temp"));
 
-    // job.waitForCompletion(true);
+    job.waitForCompletion(true);
     //
     // // Set up the second map-reduce job to calculate inverse document frequency
     // // (IDF)
