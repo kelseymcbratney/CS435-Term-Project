@@ -34,27 +34,26 @@ public class TFIDFJob {
     }
   }
 
-  public static class TFMapper extends Mapper<Text, Text, Text, Text> {
-
+public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final static Text word = new Text();
     private final static Text docId = new Text();
 
-    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-      // Tokenize the document content and emit word counts
-      StringTokenizer itr = new StringTokenizer(value.toString(), ",");
-      String overall = itr.nextToken().trim();
-      String reviewText = itr.nextToken().trim();
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+        // Tokenize the document content and emit word counts
+        StringTokenizer itr = new StringTokenizer(value.toString(), ",");
+        String overall = itr.nextToken().trim();
+        String reviewText = itr.nextToken().trim();
 
-      // Assuming you want to tokenize reviewText, you may need to adjust this based
-      // on your specific requirements
-      StringTokenizer tokenizer = new StringTokenizer(reviewText);
-      while (tokenizer.hasMoreTokens()) {
-        word.set(tokenizer.nextToken());
-        docId.set(key.toString());
-        context.write(word, new Text(docId + ":1"));
-      }
+        // Assuming you want to tokenize reviewText, you may need to adjust this based
+        // on your specific requirements
+        StringTokenizer tokenizer = new StringTokenizer(reviewText);
+        while (tokenizer.hasMoreTokens()) {
+            word.set(tokenizer.nextToken());
+            docId.set(key.toString());
+            context.write(word, new Text(docId + ":1"));
+        }
     }
-  }
+}
 
   public static class IDFMapper extends Mapper<Text, Text, Text, Text> {
 
