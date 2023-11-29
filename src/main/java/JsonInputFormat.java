@@ -22,7 +22,7 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
 
   public static class JsonRecordReader extends RecordReader<LongWritable, Text> {
 
-    private LongWritable key = new Text();
+    private Text key = new Text();
     private Text value = new Text();
     private boolean processed = false;
 
