@@ -18,7 +18,7 @@ public class SentimentLauncher {
       System.exit(-1);
     }
 
-    // Job job = Job.getInstance(conf, "TF-IDF Job");
+    Job job = Job.getInstance(conf, "TF-IDF Job");
     //
     // job.setJarByClass(TFIDFJob.class);
     // job.setInputFormatClass(JsonInputFormat.class);
