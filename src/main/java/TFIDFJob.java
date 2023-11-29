@@ -46,7 +46,7 @@ public class TFIDFJob {
   public class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final static Text word = new Text();
     private final static Text docId = new Text();
-    private static long counter = 0;
+    private long counter = 0;
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // Tokenize the document content and emit word counts
