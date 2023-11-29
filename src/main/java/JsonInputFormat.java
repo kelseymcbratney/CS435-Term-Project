@@ -48,7 +48,7 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
           ObjectMapper objectMapper = new ObjectMapper();
           JsonNode jsonNode = objectMapper.readTree(jsonString);
 
-          int overall = jsonNode.get("overall").asText();
+          String overall = jsonNode.get("overall").asText();
           String reviewText = jsonNode.get("reviewText").asText();
 
           // Transform the reviewText: remove non-alphanumeric characters and convert to
