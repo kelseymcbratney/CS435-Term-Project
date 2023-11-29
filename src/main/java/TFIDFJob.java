@@ -8,12 +8,15 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
 public class TFIDFJob {
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
     private final Text word = new Text();
     private final Text docId = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
+    private static int counter = 0; // Counter for generating unique IDs
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       try {
@@ -21,15 +24,21 @@ public class TFIDFJob {
         JsonNode jsonNode = mapper.readTree(value.toString());
 
         // Extract values
-        String overall = jsonNode.get("overall").asText();
-        String reviewText = jsonNode.get("reviewText").asText();
+        String overall = jsonNode.get("overall").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
+        String reviewText = jsonNode.get("reviewText").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
+
+        // Generate a unique ID using the counter
+        int uniqueId = counter++;
 
         // Your logic here to process 'overall' and 'reviewText' as needed
 
-        // Emit the values
-        word.set(overall);
-        docId.set(reviewText);
-        context.write(word, docId);
+        // Emit the values with unigrams, flipping word and docId
+        StringTokenizer tokenizer = new StringTokenizer(reviewText);
+        while (tokenizer.hasMoreTokens()) {
+          docId.set(Integer.toString(uniqueId));
+          word.set(tokenizer.nextToken());
+          context.write(word, docId);
+        }
 
       } catch (Exception e) {
         // Handle parsing errors
