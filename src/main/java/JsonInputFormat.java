@@ -22,7 +22,7 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
 
   public static class JsonRecordReader extends RecordReader<LongWritable, Text> {
 
-    private LongWritable key = new LongWritable();
+    private LongWritable key = new Text();
     private Text value = new Text();
     private boolean processed = false;
 
@@ -35,6 +35,9 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
       if (!processed) {
+        key.set(0); // Use a constant key since we're reading the whole file as one split
+        value.set(""); // Initialize an empty value
+
         try {
           // Read the entire JSON file into a single Text value
           String jsonString = ""; // Read your JSON file into this string
@@ -47,11 +50,8 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
           String reviewerID = jsonNode.get("reviewerID").asText();
           String reviewText = jsonNode.get("reviewText").asText();
 
-          // Set the key as the reviewerID
-          key.set(reviewerID);
-
           // Construct the final value with the required fields
-          value.set(overall + "," + reviewText);
+          value.set(overall + "," + reviewerID + "," + reviewText);
 
         } catch (Exception e) {
           e.printStackTrace();
