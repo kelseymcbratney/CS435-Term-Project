@@ -12,7 +12,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
+public class JsonInputFormat extends FileInputFormat<Text, Text> {
 
   @Override
   public RecordReader<LongWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context)
@@ -20,7 +20,7 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
     return new JsonRecordReader();
   }
 
-  public static class JsonRecordReader extends RecordReader<LongWritable, Text> {
+  public static class JsonRecordReader extends RecordReader<Text, Text> {
 
     private Text key = new Text();
     private Text value = new Text();
@@ -29,7 +29,6 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context)
         throws IOException, InterruptedException {
-      // No initialization needed for this example
     }
 
     @Override
