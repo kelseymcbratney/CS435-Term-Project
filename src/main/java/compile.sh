@@ -7,9 +7,9 @@ rm SentimentLauncher.jar
 
 hadoop com.sun.tools.javac.Main *.java
 
-mv SentimentLauncher*.class SentimentLauncher/
+mv *.class SentimentLauncher/
 
-jar cf SentimentLauncher.jar SentimentLauncher/
+jar cfm SentimentLauncher.jar Manifest.txt SentimentLauncher/
 
 hadoop fs -rm -r /SentimentAnalysis/temp
 hadoop fs -rm -r /SentimentAnalysis/idf
