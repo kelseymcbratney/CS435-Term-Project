@@ -15,25 +15,30 @@ public class TFIDFJob {
     private final static Text info = new Text();
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+      // The key is not used in this example, as the input format provides the value
+      // as a whole JSON document
+      // The value is the JSON document as a Text object
+
+      // Use a JSON parsing library to extract fields from the JSON document
+      // Assuming you have a JSON library (like Jackson or Gson) in your classpath
+
+      String jsonText = value.toString();
+
       // Parse JSON and extract reviewerID, overall, and reviewText
-      // Assuming your JSON structure is similar to the provided examples
-      // You may need to adjust this based on your actual JSON structure
-      // Use a JSON parsing library for better handling
+      // Adjust this based on your actual JSON structure and the library you are using
+      ObjectMapper objectMapper = new ObjectMapper(); // Example using Jackson
+      JsonNode jsonNode = objectMapper.readTree(jsonText);
 
-      // Extracting reviewerID
-      String[] parts = value.toString().split("\"reviewerID\":");
-      reviewerID.set(parts[1].split(",")[0].replaceAll("\"", "").trim());
+      String reviewerID = jsonNode.get("reviewerID").asText();
+      int overall = jsonNode.get("overall").asInt();
+      String reviewText = jsonNode.get("reviewText").asText();
 
-      // Extracting overall and reviewText
-      String overall = parts[0].split("\"overall\":")[1].split(",")[0].trim();
-      String reviewText = parts[0].split("\"reviewText\":")[1].split("\"summary\":")[0].replaceAll("[^a-zA-Z0-9 ]", "")
-          .toLowerCase().trim();
-
-      info.set(overall + "," + reviewText);
+      // Do further processing as needed
 
       // Emitting key-value pair
-      context.write(reviewerID, info);
+      context.write(new Text(reviewerID), new Text(overall + "," + reviewText));
     }
+
   }
 
   public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
