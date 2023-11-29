@@ -35,13 +35,11 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
       if (!processed) {
-        key.set(reviewerID);
-        value.set(""); // Initialize an empty value
+        // Read your JSON file into this string (replace this with your actual file
+        // reading logic)
+        String jsonString = "";
 
         try {
-          // Read the entire JSON file into a single Text value
-          String jsonString = ""; // Read your JSON file into this string
-
           // Parse the JSON and extract the required fields
           ObjectMapper objectMapper = new ObjectMapper();
           JsonNode jsonNode = objectMapper.readTree(jsonString);
@@ -50,8 +48,9 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
           String reviewerID = jsonNode.get("reviewerID").asText();
           String reviewText = jsonNode.get("reviewText").asText();
 
-          // Construct the final value with the required fields
-          value.set(overall + "," + reviewerID + "," + reviewText);
+          // Set the key and value
+          key.set(reviewerID);
+          value.set(overall + "," + reviewText);
 
         } catch (Exception e) {
           e.printStackTrace();
