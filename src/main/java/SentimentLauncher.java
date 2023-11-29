@@ -22,12 +22,10 @@ public class SentimentLauncher {
     Job job = Job.getInstance(conf, "TF-IDF Job");
 
     job.setJarByClass(TFIDFJob.class);
-
-    // Set up the first map-reduce job to calculate term frequency (TF)
     job.setMapperClass(TFIDFJob.TFTokenizer.class);
-    job.setMapOutputKeyClass(Text.class);
-    job.setMapOutputValueClass(Text.class);
     job.setReducerClass(TFIDFJob.SumReducer.class);
+    job.setInputFormatClass(TextInputFormat.class);
+    job.setOutputFormatClass(TextOutputFormat.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
 
@@ -40,12 +38,12 @@ public class SentimentLauncher {
     // (IDF)
     job = Job.getInstance(conf, "TF-IDF Job - IDF");
 
-    job.setInputFormatClass(TextInputFormat.class);
     job.setJarByClass(TFIDFJob.class);
     job.setMapperClass(TFIDFJob.TFIDFMapper.class);
-    job.setMapOutputKeyClass(Text.class);
-    job.setMapOutputValueClass(Text.class);
     job.setReducerClass(TFIDFJob.TFIDFReducer.class);
+    job.setReducerClass(TFIDFJob.SumReducer.class);
+    job.setInputFormatClass(TextInputFormat.class);
+    job.setOutputFormatClass(TextOutputFormat.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
 
