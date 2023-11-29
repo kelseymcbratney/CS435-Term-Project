@@ -44,8 +44,8 @@ public class TFIDFJob {
   }
 
   public class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
-    private final static Text word = new Text();
-    private final static Text docId = new Text();
+    private final Text word = new Text();
+    private final Text docId = new Text();
     private long counter = 0;
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
