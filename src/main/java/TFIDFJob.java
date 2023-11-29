@@ -39,7 +39,7 @@ public class TFIDFJob {
           docId.set(Integer.toString(uniqueId));
           word.set(tokenizer.nextToken());
           rating.set(overall);
-          context.write(docId, new Text((toString(rating) + "," + toString(word))));
+          context.write(docId, new Text(rating.toString() + "," + word.toString()));
         }
 
       } catch (Exception e) {
