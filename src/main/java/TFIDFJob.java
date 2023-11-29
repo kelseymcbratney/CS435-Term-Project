@@ -6,20 +6,28 @@ public class TFIDFJob {
 
   public static class TokenizerMapper extends Mapper<Object, Text, Text, Text> {
 
-    private final static Text word = new Text();
-    private final static Text docId = new Text();
+    private final static Text reviewerID = new Text();
+    private final static Text info = new Text();
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-      // Parse JSON and extract document ID and content
-      // Assuming your JSON structure is {"id": "doc_id", "content":
-      // "document_content"}
+      // Parse JSON and extract reviewerID, overall, and reviewText
+      // Assuming your JSON structure is similar to the provided examples
       // You may need to adjust this based on your actual JSON structure
       // Use a JSON parsing library for better handling
-      // For simplicity, this example assumes a simple text extraction
-      String[] parts = value.toString().split("\"id\":");
-      docId.set(parts[1].split(",")[0].replaceAll("\"", "").trim());
-      word.set(parts[2].split("\"content\":")[1].split("}")[0].replaceAll("[^a-zA-Z ]", "").toLowerCase().trim());
-      context.write(docId, word);
+
+      // Extracting reviewerID
+      String[] parts = value.toString().split("\"reviewerID\":");
+      reviewerID.set(parts[1].split(",")[0].replaceAll("\"", "").trim());
+
+      // Extracting overall and reviewText
+      String overall = parts[0].split("\"overall\":")[1].split(",")[0].trim();
+      String reviewText = parts[0].split("\"reviewText\":")[1].split("\"summary\":")[0].replaceAll("[^a-zA-Z0-9 ]", "")
+          .toLowerCase().trim();
+
+      info.set(overall + "," + reviewText);
+
+      // Emitting key-value pair
+      context.write(reviewerID, info);
     }
   }
 
@@ -30,9 +38,15 @@ public class TFIDFJob {
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
       // Tokenize the document content and emit word counts
-      StringTokenizer itr = new StringTokenizer(value.toString());
-      while (itr.hasMoreTokens()) {
-        word.set(itr.nextToken());
+      StringTokenizer itr = new StringTokenizer(value.toString(), ",");
+      String overall = itr.nextToken().trim();
+      String reviewText = itr.nextToken().trim();
+
+      // Assuming you want to tokenize reviewText, you may need to adjust this based
+      // on your specific requirements
+      StringTokenizer tokenizer = new StringTokenizer(reviewText);
+      while (tokenizer.hasMoreTokens()) {
+        word.set(tokenizer.nextToken());
         docId.set(key.toString());
         context.write(word, new Text(docId + ":1"));
       }

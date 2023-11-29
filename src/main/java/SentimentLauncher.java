@@ -9,6 +9,12 @@ public class SentimentLauncher {
 
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
+
+    if (args.length != 2) {
+      System.err.println("Usage: SentimentLauncher <input path> <output path>");
+      System.exit(-1);
+    }
+
     Job job = Job.getInstance(conf, "TF-IDF Job");
 
     job.setJarByClass(TFIDFJob.class);
