@@ -25,7 +25,7 @@ public class TFIDFJob {
         JsonNode jsonNode = mapper.readTree(value.toString());
 
         // Extract values
-        String overall = jsonNode.get("overall").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
+        String overall = jsonNode.get("overall");
         String reviewText = jsonNode.get("reviewText").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
 
         // Generate a unique ID using the counter
@@ -39,7 +39,7 @@ public class TFIDFJob {
           docId.set(Integer.toString(uniqueId));
           word.set(tokenizer.nextToken());
           rating.set(overall);
-          context.write(docId, new Text(rating.toString() + "," + word.toString()));
+          context.write(docId, new Text(rating.toString() + ", " + word.toString()));
         }
 
       } catch (Exception e) {
