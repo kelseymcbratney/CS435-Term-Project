@@ -49,11 +49,35 @@ public class TFIDFJob {
     }
   }
 
-  public static class SumReducer extends Reducer<Text, Text, Text, Text> {
+  public class SumReducer extends Reducer<Text, Text, Text, Text> {
+
     private final static Text result = new Text();
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      return;
+      // Initialize a map to store the count of each unigram
+      Map<String, Integer> unigramCountMap = new HashMap<>();
+
+      // Iterate through the values and count the occurrences of each unigram
+      for (Text value : values) {
+        String[] parts = value.toString().split(", ");
+        String unigram = parts[2]; // Assuming the unigram is at index 2
+        int count = Integer.parseInt(parts[1]); // Assuming the count is at index 1
+
+        // Update the count in the map
+        unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
+      }
+
+      // Build the result string with unigram frequencies
+      StringBuilder resultBuilder = new StringBuilder();
+      for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
+        resultBuilder.append(entry.getKey()).append(":").append(entry.getValue()).append(", ");
+      }
+
+      // Set the result text
+      result.set(resultBuilder.toString());
+
+      // Emit the result for the key (docId)
+      context.write(key, result);
     }
   }
 
