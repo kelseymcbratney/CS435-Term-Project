@@ -24,7 +24,7 @@ public class SentimentLauncher {
     job.setInputFormatClass(JsonInputFormat.class);
 
     // Set up the first map-reduce job to calculate term frequency (TF)
-    job.setMapperClass(TFIDFJob.TokenizerMapper.class);
+    job.setMapperClass(TFIDFJob.TFMapper.class);
     job.setMapOutputKeyClass(Text.class);
     job.setMapOutputValueClass(Text.class);
     job.setReducerClass(TFIDFJob.SumReducer.class);
