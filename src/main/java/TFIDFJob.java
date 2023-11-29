@@ -87,7 +87,10 @@ public class TFIDFJob {
     private final static Text result = new Text();
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-      // Simply emit the input key-value pair
+      System.out.println("Key type: " + key.getClass().getName());
+      System.out.println("Value type: " + value.getClass().getName());
+
+      // Continue with your processing
       context.write(key, value);
     }
   }
