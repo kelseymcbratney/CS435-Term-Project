@@ -10,39 +10,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class TFIDFJob {
-
-  public static class TokenizerMapper extends Mapper<Object, Text, Text, Text> {
-
-    private final static Text reviewerID = new Text();
-    private final static Text info = new Text();
-
-    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-      // The key is not used in this example, as the input format provides the value
-      // as a whole JSON document
-      // The value is the JSON document as a Text object
-
-      // Use a JSON parsing library to extract fields from the JSON document
-      // Assuming you have a JSON library (like Jackson or Gson) in your classpath
-
-      String jsonText = value.toString();
-
-      // Parse JSON and extract reviewerID, overall, and reviewText
-      // Adjust this based on your actual JSON structure and the library you are using
-      ObjectMapper objectMapper = new ObjectMapper(); // Example using Jackson
-      JsonNode jsonNode = objectMapper.readTree(jsonText);
-
-      String reviewerID = jsonNode.get("reviewerID").asText();
-      int overall = jsonNode.get("overall").asInt();
-      String reviewText = jsonNode.get("reviewText").asText();
-
-      // Do further processing as needed
-
-      // Emitting key-value pair
-      context.write(new Text(reviewerID), new Text(overall + "," + reviewText));
-    }
-
-  }
-
   public class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final Text word = new Text();
     private final Text docId = new Text();
