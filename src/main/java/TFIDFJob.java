@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.StringTokenizer;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
