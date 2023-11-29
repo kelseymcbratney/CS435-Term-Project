@@ -17,17 +17,20 @@ public class TFIDFJob {
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // Tokenize the document content and emit word counts
-      StringTokenizer itr = new StringTokenizer(value.toString(), ",");
-      String overall = itr.nextToken().trim();
-      String reviewText = itr.nextToken().trim();
-      String uniqueDocId = key.toString();
+      String[] tokens = value.toString().split(",");
 
-      StringTokenizer tokenizer = new StringTokenizer(reviewText);
-      while (tokenizer.hasMoreTokens()) {
-        word.set(tokenizer.nextToken());
-        docId.set(uniqueDocId); // Using the uniqueDocId for each word
-        // Emitting key-value pair with the same docId for each word
-        context.write(docId, word);
+      // Check if there are enough tokens and retrieve reviewText
+      if (tokens.length > 1) {
+        String reviewText = tokens[1].trim();
+
+        // Assuming you want to tokenize reviewText, you may need to adjust this based
+        // on your specific requirements
+        StringTokenizer tokenizer = new StringTokenizer(reviewText);
+        while (tokenizer.hasMoreTokens()) {
+          word.set(tokenizer.nextToken());
+          docId.set("ID_" + counter++); // Using a unique key
+          context.write(word, new Text(docId + ":1"));
+        }
       }
     }
   }
