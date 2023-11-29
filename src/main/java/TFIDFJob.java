@@ -10,11 +10,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class TFIDFJob {
-  public class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
-    public TFMapper() {
-      // Default constructor
-    }
-
+  public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final Text word = new Text();
     private final Text docId = new Text();
     private long counter = 0;
