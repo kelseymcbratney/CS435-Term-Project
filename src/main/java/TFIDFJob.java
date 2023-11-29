@@ -1,5 +1,6 @@
 package SentimentLauncher;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import org.apache.hadoop.io.*;
