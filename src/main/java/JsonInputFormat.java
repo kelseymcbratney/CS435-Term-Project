@@ -35,7 +35,7 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
       if (!processed) {
-        key.set(0); // Use a constant key since we're reading the whole file as one split
+        key.set(reviewerID);
         value.set(""); // Initialize an empty value
 
         try {
@@ -65,7 +65,7 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
     }
 
     @Override
-    public LongWritable getCurrentKey() throws IOException, InterruptedException {
+    public Text getCurrentKey() throws IOException, InterruptedException {
       return key;
     }
 
