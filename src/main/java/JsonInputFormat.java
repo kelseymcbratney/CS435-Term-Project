@@ -63,7 +63,6 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
       return false;
     }
 
-    @Override
     public Text getCurrentKey() throws IOException, InterruptedException {
       return key;
     }
