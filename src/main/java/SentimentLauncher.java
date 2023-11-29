@@ -19,7 +19,7 @@ public class SentimentLauncher {
     Job job = Job.getInstance(conf, "TF-IDF Job");
 
     job.setJarByClass(TFIDFJob.class);
-    job.setInputFormatClass(JsonInputFormat.class); // Custom input format for JSON (you need to implement this)
+    job.setInputFormatClass(JsonInputFormat.class);
 
     // Set up the first map-reduce job to calculate term frequency (TF)
     job.setMapperClass(TFIDFJob.TokenizerMapper.class);
