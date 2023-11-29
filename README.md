@@ -1,2 +1,7 @@
 # CS435-Term-Project
-# Added xml file for Weka and common_csv.
+
+## Compile
+./compile.sh
+
+## Run Sentiment Analysis
+hadoop jar SentimentLauncher.jar /SentimentAnalysis/home-and-kitchen.json /SentimentAnalysis
