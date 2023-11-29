@@ -10,6 +10,33 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class TFIDFJob {
+  public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
+    private final Text word = new Text();
+    private final Text docId = new Text();
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+      try {
+        // Parse JSON
+        JsonNode jsonNode = mapper.readTree(value.toString());
+
+        // Extract values
+        String overall = jsonNode.get("overall").asText();
+        String reviewText = jsonNode.get("reviewText").asText();
+
+        // Your logic here to process 'overall' and 'reviewText' as needed
+
+        // Emit the values
+        word.set(overall);
+        docId.set(reviewText);
+        context.write(word, docId);
+
+      } catch (Exception e) {
+        // Handle parsing errors
+        System.err.println("Error parsing JSON: " + e.getMessage());
+      }
+    }
+  }
 
   public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final Text word = new Text();
