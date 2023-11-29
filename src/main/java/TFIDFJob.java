@@ -83,8 +83,16 @@ public class TFIDFJob {
     }
   }
 
-  public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
+  public static class TFIDFMapper extends Mapper<Text, Text, Text, Text> {
+    private final static Text result = new Text();
 
+    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
+      // Simply emit the input key-value pair
+      context.write(key, value);
+    }
+  }
+
+  public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
     private final static Text result = new Text();
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
@@ -96,10 +104,9 @@ public class TFIDFJob {
       // Count the total number of documents and documents containing the word
       for (Text value : values) {
         totalDocuments++;
-        String[] parts = value.toString().split(", "); // Change this line
-        String documentId = parts[0];
+        String[] parts = value.toString().split(",");
         int count = Integer.parseInt(parts[1]);
-        wordCounts.put(documentId, count);
+        wordCounts.put(key.toString(), count);
         if (count > 0) {
           documentsWithWord++;
         }
@@ -113,7 +120,7 @@ public class TFIDFJob {
         double idf = Math.log((double) totalDocuments / documentsWithWord);
         double tfidf = tf * idf;
 
-        result.set(key.toString() + ":" + tfidf);
+        result.set(documentId + ":" + tfidf);
         context.write(new Text(documentId), result);
       }
     }
