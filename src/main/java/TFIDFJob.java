@@ -10,38 +10,25 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class TFIDFJob {
+
   public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final Text word = new Text();
     private final Text docId = new Text();
-    private long counter = 0;
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // Tokenize the document content and emit word counts
       StringTokenizer itr = new StringTokenizer(value.toString(), ",");
       String overall = itr.nextToken().trim();
       String reviewText = itr.nextToken().trim();
+      String uniqueDocId = key.toString();
 
-      // Assuming you want to tokenize reviewText, you may need to adjust this based
-      // on your specific requirements
       StringTokenizer tokenizer = new StringTokenizer(reviewText);
       while (tokenizer.hasMoreTokens()) {
         word.set(tokenizer.nextToken());
-        docId.set("ID_" + counter++); // Using a unique key
-        context.write(word, new Text(docId + ":1"));
+        docId.set(uniqueDocId); // Using the uniqueDocId for each word
+        // Emitting key-value pair with the same docId for each word
+        context.write(docId, word);
       }
-    }
-  }
-
-  public static class IDFMapper extends Mapper<Text, Text, Text, Text> {
-
-    private final static Text word = new Text();
-    private final static Text docIdCount = new Text();
-
-    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-      // Emit word and document count
-      word.set(key.toString());
-      docIdCount.set(value.toString());
-      context.write(word, docIdCount);
     }
   }
 
@@ -50,13 +37,21 @@ public class TFIDFJob {
     private final static Text result = new Text();
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      // Calculate the sum of word counts or document counts based on the context
-      // Emit the result
-      int sum = 0;
+      // Create a StringBuilder to store unigrams and count
+      StringBuilder unigramBuilder = new StringBuilder();
+
+      // Iterate through values and count the unigrams
+      int count = 0;
       for (Text value : values) {
-        sum += Integer.parseInt(value.toString().split(":")[1]);
+        if (count > 0) {
+          unigramBuilder.append(", ");
+        }
+        unigramBuilder.append(value.toString().split(":")[0]);
+        count++;
       }
-      result.set(key.toString() + ":" + sum);
+
+      // Emit the result with unigrams and count
+      result.set("Unigrams: " + unigramBuilder.toString() + ", Count: " + count);
       context.write(key, result);
     }
   }

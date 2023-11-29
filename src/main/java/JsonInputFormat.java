@@ -51,6 +51,10 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
           int overall = jsonNode.get("overall").asInt();
           String reviewText = jsonNode.get("reviewText").asText();
 
+          // Transform the reviewText: remove non-alphanumeric characters and convert to
+          // lowercase
+          reviewText = reviewText.replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
+
           // Construct the final value with the required fields
           value.set(overall + "," + reviewText);
 
