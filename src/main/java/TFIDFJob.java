@@ -62,6 +62,7 @@ public class TFIDFJob {
         String[] parts = value.toString().split(", ");
         String unigram = parts[2]; // Assuming the unigram is at index 2
         int count = Integer.parseInt(parts[1]); // Assuming the count is at index 1
+        String rating = parts[0];
 
         // Update the count in the map
         unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
@@ -74,7 +75,7 @@ public class TFIDFJob {
       }
 
       // Set the result text
-      result.set(resultBuilder.toString());
+      result.set(rating + resultBuilder.toString());
 
       // Emit the result for the key (docId)
       context.write(key, result);
