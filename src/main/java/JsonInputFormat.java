@@ -38,11 +38,18 @@ public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
     public boolean nextKeyValue() throws IOException, InterruptedException {
       if (!processed) {
         key.set(counter++); // Using a counter for unique keys
-        value.set(""); // Initialize an empty value
 
         try {
-          // Read the entire JSON file into a single Text value
-          String jsonString = ""; // Read your JSON file into this string
+          // Read the content of the split into a single Text value
+          // This is just a basic example; adjust it based on your actual needs
+          byte[] buffer = new byte[4096]; // Choose an appropriate buffer size
+          int bytesRead;
+
+          while ((bytesRead = inStream.read(buffer)) > 0) {
+            content.append(new String(buffer, 0, bytesRead, StandardCharsets.UTF_8));
+          }
+
+          String jsonString = content.toString();
 
           // Parse the JSON and extract the required fields
           ObjectMapper objectMapper = new ObjectMapper();
