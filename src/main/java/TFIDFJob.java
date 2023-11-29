@@ -47,72 +47,72 @@ public class TFIDFJob {
         System.err.println("Error parsing JSON: " + e.getMessage());
       }
     }
+  }
 
-    public static class SumReducer extends Reducer<Text, Text, Text, Text> {
+  public static class SumReducer extends Reducer<Text, Text, Text, Text> {
 
-      private final Text result = new Text();
+    private final Text result = new Text();
 
-      public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-        // Initialize a map to store the count of each unigram
-        Map<String, Integer> unigramCountMap = new HashMap<>();
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+      // Initialize a map to store the count of each unigram
+      Map<String, Integer> unigramCountMap = new HashMap<>();
 
-        // Iterate through the values and count the occurrences of each unigram
-        for (Text value : values) {
-          String[] parts = value.toString().split(", ");
-          String unigram = parts[2]; // Assuming the unigram is at index 2
-          int count = Integer.parseInt(parts[1]); // Assuming the count is at index 1
+      // Iterate through the values and count the occurrences of each unigram
+      for (Text value : values) {
+        String[] parts = value.toString().split(", ");
+        String unigram = parts[2]; // Assuming the unigram is at index 2
+        int count = Integer.parseInt(parts[1]); // Assuming the count is at index 1
 
-          // Update the count in the map
-          unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
-        }
-
-        // Build the result string with unigram frequencies
-        StringBuilder resultBuilder = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
-          resultBuilder.append(entry.getKey()).append(":").append(entry.getValue()).append(", ");
-        }
-
-        // Set the result text
-        result.set(resultBuilder.toString());
-
-        // Emit the result for the key (docId)
-        context.write(key, result);
+        // Update the count in the map
+        unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
       }
+
+      // Build the result string with unigram frequencies
+      StringBuilder resultBuilder = new StringBuilder();
+      for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
+        resultBuilder.append(entry.getKey()).append(":").append(entry.getValue()).append(", ");
+      }
+
+      // Set the result text
+      result.set(resultBuilder.toString());
+
+      // Emit the result for the key (docId)
+      context.write(key, result);
     }
+  }
 
-    public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
+  public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
 
-      private final static Text result = new Text();
+    private final static Text result = new Text();
 
-      public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-        // Calculate TF-IDF and emit the result
-        int totalDocuments = 0;
-        int documentsWithWord = 0;
-        Map<String, Integer> wordCounts = new HashMap<>();
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+      // Calculate TF-IDF and emit the result
+      int totalDocuments = 0;
+      int documentsWithWord = 0;
+      Map<String, Integer> wordCounts = new HashMap<>();
 
-        // Count the total number of documents and documents containing the word
-        for (Text value : values) {
-          totalDocuments++;
-          String[] parts = value.toString().split(", "); // Change this line
-          String documentId = parts[0];
-          int count = Integer.parseInt(parts[1]);
-          wordCounts.put(documentId, count);
-          if (count > 0) {
-            documentsWithWord++;
-          }
+      // Count the total number of documents and documents containing the word
+      for (Text value : values) {
+        totalDocuments++;
+        String[] parts = value.toString().split(", "); // Change this line
+        String documentId = parts[0];
+        int count = Integer.parseInt(parts[1]);
+        wordCounts.put(documentId, count);
+        if (count > 0) {
+          documentsWithWord++;
         }
+      }
 
-        // Calculate TF-IDF and emit the result for each document
-        for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
-          String documentId = entry.getKey();
-          int termFrequency = entry.getValue();
-          double tf = (double) termFrequency / wordCounts.size();
-          double idf = Math.log((double) totalDocuments / documentsWithWord);
-          double tfidf = tf * idf;
+      // Calculate TF-IDF and emit the result for each document
+      for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
+        String documentId = entry.getKey();
+        int termFrequency = entry.getValue();
+        double tf = (double) termFrequency / wordCounts.size();
+        double idf = Math.log((double) totalDocuments / documentsWithWord);
+        double tfidf = tf * idf;
 
-          result.set(key.toString() + ":" + tfidf);
-          context.write(new Text(documentId), result);
-        }
+        result.set(key.toString() + ":" + tfidf);
+        context.write(new Text(documentId), result);
       }
     }
   }
