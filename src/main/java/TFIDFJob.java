@@ -43,9 +43,10 @@ public class TFIDFJob {
 
   }
 
-  public static class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
+  public class TFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final static Text word = new Text();
     private final static Text docId = new Text();
+    private static long counter = 0;
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // Tokenize the document content and emit word counts
@@ -58,7 +59,7 @@ public class TFIDFJob {
       StringTokenizer tokenizer = new StringTokenizer(reviewText);
       while (tokenizer.hasMoreTokens()) {
         word.set(tokenizer.nextToken());
-        docId.set(key.toString());
+        docId.set("ID_" + counter++); // Using a unique key
         context.write(word, new Text(docId + ":1"));
       }
     }

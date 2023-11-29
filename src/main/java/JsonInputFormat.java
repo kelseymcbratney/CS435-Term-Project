@@ -1,7 +1,3 @@
-package SentimentLauncher;
-
-import java.io.IOException;
-
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -12,7 +8,10 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonInputFormat extends FileInputFormat<Text, Text> {
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+public class JsonInputFormat extends FileInputFormat<LongWritable, Text> {
 
   @Override
   public RecordReader<LongWritable, Text> createRecordReader(InputSplit split, TaskAttemptContext context)
@@ -20,35 +19,37 @@ public class JsonInputFormat extends FileInputFormat<Text, Text> {
     return new JsonRecordReader();
   }
 
-  public static class JsonRecordReader extends RecordReader<Text, Text> {
+  public static class JsonRecordReader extends RecordReader<LongWritable, Text> {
 
-    private Text key = new Text();
+    private LongWritable key = new LongWritable();
     private Text value = new Text();
+    private static long counter = 0;
     private boolean processed = false;
 
     @Override
     public void initialize(InputSplit split, TaskAttemptContext context)
         throws IOException, InterruptedException {
+      // No initialization needed for this example
     }
 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
       if (!processed) {
-        // Read your JSON file into this string (replace this with your actual file
-        // reading logic)
-        String jsonString = "";
+        key.set(counter++); // Using a counter for unique keys
+        value.set(""); // Initialize an empty value
 
         try {
+          // Read the entire JSON file into a single Text value
+          String jsonString = ""; // Read your JSON file into this string
+
           // Parse the JSON and extract the required fields
           ObjectMapper objectMapper = new ObjectMapper();
           JsonNode jsonNode = objectMapper.readTree(jsonString);
 
           int overall = jsonNode.get("overall").asInt();
-          String reviewerID = jsonNode.get("reviewerID").asText();
           String reviewText = jsonNode.get("reviewText").asText();
 
-          // Set the key and value
-          key.set(reviewerID);
+          // Construct the final value with the required fields
           value.set(overall + "," + reviewText);
 
         } catch (Exception e) {
@@ -62,7 +63,8 @@ public class JsonInputFormat extends FileInputFormat<Text, Text> {
       return false;
     }
 
-    public Text getCurrentKey() throws IOException, InterruptedException {
+    @Override
+    public LongWritable getCurrentKey() throws IOException, InterruptedException {
       return key;
     }
 
