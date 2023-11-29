@@ -40,10 +40,10 @@ public class SentimentLauncher {
     job = Job.getInstance(conf, "TF-IDF Job - IDF");
 
     job.setJarByClass(TFIDFJob.class);
-    job.setMapperClass(TFIDFJob.TFIDFReducer.class);
+    job.setMapperClass(TFIDFJob.TFIDFMapper.class);
     job.setMapOutputKeyClass(Text.class);
     job.setMapOutputValueClass(Text.class);
-    job.setReducerClass(TFIDFJob.TFIDFMapper.class);
+    job.setReducerClass(TFIDFJob.TFIDFReducer.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
 
