@@ -25,7 +25,7 @@ public class TFIDFJob {
         JsonNode jsonNode = mapper.readTree(value.toString());
 
         // Extract values
-        String overall = jsonNode.get("overall");
+        String overall = jsonNode.get("overall").asText();
         String reviewText = jsonNode.get("reviewText").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
 
         // Generate a unique ID using the counter
