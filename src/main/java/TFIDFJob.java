@@ -93,7 +93,7 @@ public class TFIDFJob {
         // Count the total number of documents and documents containing the word
         for (Text value : values) {
           totalDocuments++;
-          String[] parts = value.toString().split(":");
+          String[] parts = value.toString().split(", "); // Change this line
           String documentId = parts[0];
           int count = Integer.parseInt(parts[1]);
           wordCounts.put(documentId, count);
