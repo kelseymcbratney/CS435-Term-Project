@@ -138,13 +138,18 @@ public class TFIDFJob {
         // Generate a unique ID using the counter
         int uniqueId = counter++;
 
-        // Emit the values with unigrams, flipping word and docId
+        // Emit the unique ID and rating
+        word.set(Integer.toString(uniqueId));
+        RatingUnigramCount.set(rating);
+
+        context.write(word, RatingUnigramCount);
+
+        // Emit each unigram and its TF value separately
         StringTokenizer tokenizer = new StringTokenizer(reviewText);
         while (tokenizer.hasMoreTokens()) {
           String unigram = tokenizer.nextToken();
           if (!stopWords.contains(unigram)) {
-            RatingUnigramCount.set(rating + ", " + unigram + ", " + "1");
-            word.set(Integer.toString(uniqueId));
+            RatingUnigramCount.set(unigram + "\t" + "1");
             context.write(word, RatingUnigramCount);
           }
         }
