@@ -112,30 +112,25 @@ public class TFIDFJob {
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       try {
-        // Parse JSON
-        JsonNode jsonNode = mapper.readTree(value.toString());
-
-        // Extract values
-        String overall = jsonNode.get("overall").asText();
-        String reviewText = jsonNode.get("reviewText").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
-
-        // Generate a unique ID using the counter
-        int uniqueId = counter++;
-
-        // Your logic here to process 'overall' and 'reviewText' as needed
+        // ... (parse JSON, process reviewText, generate uniqueId, etc.)
 
         // Emit the values with unigrams, flipping word and docId
         StringTokenizer tokenizer = new StringTokenizer(reviewText);
+        int totalTerms = 0;
+        Map<String, Integer> termFrequencyMap = new HashMap<>();
+
         while (tokenizer.hasMoreTokens()) {
           String token = tokenizer.nextToken();
           if (!stopWords.contains(token)) {
-            docId.set(Integer.toString(uniqueId));
-            word.set(token);
-            rating.set(overall);
-            context.write(docId, new Text(rating.toString() + ", " + "1" + ", " + word.toString()));
+            totalTerms++;
+            termFrequencyMap.put(token, termFrequencyMap.getOrDefault(token, 0) + 1);
           }
         }
 
+        for (Map.Entry<String, Integer> entry : termFrequencyMap.entrySet()) {
+          double tf = (double) entry.getValue() / totalTerms;
+          context.write(docId, new Text(entry.getKey() + ":" + tf + ":" + totalTerms));
+        }
       } catch (Exception e) {
         // Handle parsing errors
         System.err.println("Error parsing JSON: " + e.getMessage());
@@ -144,6 +139,9 @@ public class TFIDFJob {
   }
 
   public static class SumReducer extends Reducer<Text, Text, Text, Text> {
+    // Output key: documentId, value: "term:TF:totalTerms"
+    // Example: "doc1", "word1:0.05:100"
+    // ...
 
     private final Text result = new Text();
     private String rating;
@@ -151,22 +149,26 @@ public class TFIDFJob {
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       // Initialize a map to store the count of each unigram
       Map<String, Integer> unigramCountMap = new HashMap<>();
+      int totalTerms = 0;
 
       // Iterate through the values and count the occurrences of each unigram
       for (Text value : values) {
-        String[] parts = value.toString().split(", ");
-        String unigram = parts[2]; // Assuming the unigram is at index 2
-        int count = Integer.parseInt(parts[1]); // Assuming the count is at index 1
-        rating = parts[0];
+        String[] parts = value.toString().split(":");
+        String unigram = parts[0];
+        double tf = Double.parseDouble(parts[1]);
+        int termsInDocument = Integer.parseInt(parts[2]);
+        totalTerms += termsInDocument;
 
         // Update the count in the map
-        unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
+        unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + 1);
       }
 
       // Build the result string with unigram frequencies
       StringBuilder resultBuilder = new StringBuilder();
       for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
-        resultBuilder.append(entry.getKey()).append(":").append(entry.getValue()).append(", ");
+        String unigram = entry.getKey();
+        double tf = (double) entry.getValue() / totalTerms;
+        resultBuilder.append(unigram).append(":").append(tf).append(", ");
       }
 
       // Set the result text
