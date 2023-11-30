@@ -48,10 +48,9 @@ public class TFIDFJob {
     private static Set<String> stopWords;
 
     public void setup(Context context) throws IOException, InterruptedException {
-      Path[] localFiles = DistributedCache.getLocalCacheFiles();
-      if (localFiles.length > 0) {
-        BufferedReader brReader = new BufferedReader(new FileReader(localFiles[0].toString()));
-      }
+      Configuration conf = context.getConfiguration();
+      URI[] uriList = DistributedCache.getCacheFiles(conf);
+      BufferedReader br = new BufferedReader(new FileReader(uriList[0].getPath()));
     }
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
