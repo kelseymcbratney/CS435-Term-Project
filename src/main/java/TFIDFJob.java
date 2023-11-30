@@ -208,6 +208,7 @@ public class TFIDFJob {
 
   public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
     private final Text result = new Text();
+    private String rating;
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       long totalReviewCount = context.getConfiguration().getLong("total_records", 0L);
