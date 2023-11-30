@@ -146,7 +146,6 @@ public class TFIDFJob {
   }
 
   public static class SumReducer extends Reducer<Text, Text, Text, Text> {
-
     private final Text result = new Text();
     private String rating;
 
@@ -155,6 +154,8 @@ public class TFIDFJob {
       Map<String, Integer> unigramCountMap = new HashMap<>();
 
       // Iterate through the values and count the occurrences of each unigram
+      int totalWords = 0; // Total words in the document for calculating TF
+
       for (Text value : values) {
         String[] parts = value.toString().split(", ");
         String unigram = parts[2]; // Assuming the unigram is at index 2
@@ -163,20 +164,30 @@ public class TFIDFJob {
 
         // Update the count in the map
         unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
+
+        // Accumulate total words
+        totalWords += count;
       }
 
-      // Build the result string with unigram frequencies and the overall rating
+      // Build the result string with TF values and the overall rating
       StringBuilder resultBuilder = new StringBuilder();
       for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
-        resultBuilder.append(entry.getKey()).append(":").append(entry.getValue()).append(", ");
+        String unigram = entry.getKey();
+        int count = entry.getValue();
+
+        // Calculate TF (Term Frequency)
+        double tf = (double) count / totalWords;
+
+        resultBuilder.append(unigram).append(":").append(tf).append(", ");
       }
+
       // Append the overall rating
       resultBuilder.append("overall:").append(rating);
 
       // Set the result text
       result.set(resultBuilder.toString());
 
-      // Emit the result for the key (docId)
+      // Emit the result for the key (overall rating)
       context.write(new Text(rating), result);
     }
   }
