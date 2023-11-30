@@ -54,33 +54,20 @@ public class TFIDFJob {
 
       if (cacheFiles != null && cacheFiles.length > 0) {
         try {
-          System.err.println("Reading stop words from: " + cacheFiles[0].toString());
-
           String line = "";
 
-          // Create a FileSystem object and pass the
-          // configuration object in it. The FileSystem
-          // is an abstract base class for a fairly generic
-          // filesystem. All user code that may potentially
-          // use the Hadoop Distributed File System should
-          // be written to use a FileSystem object.
           FileSystem fs = FileSystem.get(context.getConfiguration());
           Path getFilePath = new Path(cacheFiles[0].toString());
 
-          // We open the file using FileSystem object,
-          // convert the input byte stream to character
-          // streams using InputStreamReader and wrap it
-          // in BufferedReader to make it more efficient
           BufferedReader reader = new BufferedReader(new InputStreamReader(fs.open(getFilePath)));
 
           while ((line = reader.readLine()) != null) {
-            System.err.println("Adding stop word: " + line.trim());
             stopWords.add(line.trim());
           }
         }
 
         catch (Exception e) {
-          e.printStackTrace(); // Print the stack trace for detailed error information
+          e.printStackTrace();
           System.out.println("Unable to read the File");
           System.exit(1);
         }
