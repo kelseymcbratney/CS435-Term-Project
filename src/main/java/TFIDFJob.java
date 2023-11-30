@@ -229,11 +229,19 @@ public class TFIDFJob {
         if (parts.length >= 3) {
           String unigram = parts[1]; // Assuming the unigram is at index 1
           rating = parts[0]; // Assuming the rating is at index 0
-          double tf = Double.parseDouble(parts[2]);
-          double idf = Math.log10((double) totalReviewCount / (double) documentFrequency);
-          double tfidf = tf * idf;
-          result.set(rating + "\t" + unigram + "\t" + tfidf);
-          context.write(key, result);
+          String tfString = parts[2]; // Assuming the TF value is at index 2
+
+          // Check if tfString is a valid representation of a double
+          try {
+            double tf = Double.parseDouble(tfString);
+            double idf = Math.log10((double) totalReviewCount / (double) documentFrequency);
+            double tfidf = tf * idf;
+            result.set(rating + "\t" + unigram + "\t" + tfidf);
+            context.write(key, result);
+          } catch (NumberFormatException e) {
+            // Handle the case where tfString is not a valid double
+            System.err.println("Error parsing TF value: " + tfString);
+          }
         }
       }
 
