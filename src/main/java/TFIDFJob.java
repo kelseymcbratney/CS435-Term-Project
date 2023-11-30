@@ -18,6 +18,93 @@ public class TFIDFJob {
     private final Text rating = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
     private static int counter = 0; // Counter for generating unique IDs
+    private static Set<String> stopWords;
+
+    static {
+      // Initialize stop words set
+      stopWords = new HashSet<>();
+      stopWords.add("each");
+      stopWords.add("every");
+      stopWords.add("her");
+      stopWords.add("his");
+      stopWords.add("its");
+      stopWords.add("my");
+      stopWords.add("no");
+      stopWords.add("our");
+      stopWords.add("some");
+      stopWords.add("that");
+      stopWords.add("the");
+      stopWords.add("their");
+      stopWords.add("this");
+      // Add coordinating conjunctions
+      stopWords.add("and");
+      stopWords.add("but");
+      stopWords.add("or");
+      stopWords.add("yet");
+      stopWords.add("for");
+      stopWords.add("nor");
+      stopWords.add("so");
+      // Add prepositions
+      stopWords.add("as");
+      stopWords.add("aboard");
+      stopWords.add("about");
+      stopWords.add("above");
+      stopWords.add("across");
+      stopWords.add("after");
+      stopWords.add("against");
+      stopWords.add("along");
+      stopWords.add("around");
+      stopWords.add("at");
+      stopWords.add("before");
+      stopWords.add("behind");
+      stopWords.add("below");
+      stopWords.add("beneath");
+      stopWords.add("beside");
+      stopWords.add("between");
+      stopWords.add("beyond");
+      stopWords.add("but");
+      stopWords.add("by");
+      stopWords.add("down");
+      stopWords.add("during");
+      stopWords.add("except");
+      stopWords.add("following");
+      stopWords.add("for");
+      stopWords.add("from");
+      stopWords.add("in");
+      stopWords.add("inside");
+      stopWords.add("into");
+      stopWords.add("like");
+      stopWords.add("minus");
+      stopWords.add("minus");
+      stopWords.add("near");
+      stopWords.add("next");
+      stopWords.add("of");
+      stopWords.add("off");
+      stopWords.add("on");
+      stopWords.add("onto");
+      stopWords.add("onto");
+      stopWords.add("opposite");
+      stopWords.add("out");
+      stopWords.add("outside");
+      stopWords.add("over");
+      stopWords.add("past");
+      stopWords.add("plus");
+      stopWords.add("round");
+      stopWords.add("since");
+      stopWords.add("since");
+      stopWords.add("than");
+      stopWords.add("through");
+      stopWords.add("to");
+      stopWords.add("toward");
+      stopWords.add("under");
+      stopWords.add("underneath");
+      stopWords.add("unlike");
+      stopWords.add("until");
+      stopWords.add("up");
+      stopWords.add("upon");
+      stopWords.add("with");
+      stopWords.add("without");
+    }
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       try {
@@ -36,10 +123,13 @@ public class TFIDFJob {
         // Emit the values with unigrams, flipping word and docId
         StringTokenizer tokenizer = new StringTokenizer(reviewText);
         while (tokenizer.hasMoreTokens()) {
-          docId.set(Integer.toString(uniqueId));
-          word.set(tokenizer.nextToken());
-          rating.set(overall);
-          context.write(docId, new Text(rating.toString() + ", " + "1" + ", " + word.toString()));
+          String word = tokenizer.nextToken();
+          if (!stopWords.contains(word)) {
+            docId.set(Integer.toString(uniqueId));
+            word.set(word);
+            rating.set(overall);
+            context.write(docId, new Text(rating.toString() + ", " + "1" + ", " + word.toString()));
+          }
         }
 
       } catch (Exception e) {
@@ -80,43 +170,7 @@ public class TFIDFJob {
 
       // Emit the result for the key (docId)
       context.write(new Text(rating), result);
-      // blah
     }
   }
 
-  public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
-
-    private final static Text result = new Text();
-
-    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      // Calculate TF-IDF and emit the result
-      int totalDocuments = 0;
-      int documentsWithWord = 0;
-      Map<String, Integer> wordCounts = new HashMap<>();
-
-      // Count the total number of documents and documents containing the word
-      for (Text value : values) {
-        totalDocuments++;
-        String[] parts = value.toString().split(", "); // Change this line
-        String documentId = parts[0];
-        int count = Integer.parseInt(parts[1]);
-        wordCounts.put(documentId, count);
-        if (count > 0) {
-          documentsWithWord++;
-        }
-      }
-
-      // Calculate TF-IDF and emit the result for each document
-      for (Map.Entry<String, Integer> entry : wordCounts.entrySet()) {
-        String documentId = entry.getKey();
-        int termFrequency = entry.getValue();
-        double tf = (double) termFrequency / wordCounts.size();
-        double idf = Math.log((double) totalDocuments / documentsWithWord);
-        double tfidf = tf * idf;
-
-        result.set(key.toString() + ":" + tfidf);
-        context.write(new Text(documentId), result);
-      }
-    }
-  }
 }
