@@ -31,7 +31,7 @@ public class TFIDFJob {
   }
 
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
-    private final Text word = new Text();
+    private final Text docID = new Text();
     private final Text RatingUnigramCount = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
     private static int counter = 0; // Counter for generating unique IDs
@@ -143,10 +143,10 @@ public class TFIDFJob {
         while (tokenizer.hasMoreTokens()) {
           String unigram = tokenizer.nextToken();
           if (!stopWords.contains(unigram)) {
-            // Emit the unique ID (docID) and rating
-            word.set(Integer.toString(uniqueId));
+            // Emit the unique ID (docID), rating, and unigram
+            docID.set(Integer.toString(uniqueId));
             RatingUnigramCount.set(rating + "\t" + unigram + "\t" + "1");
-            context.write(word, RatingUnigramCount);
+            context.write(docID, RatingUnigramCount);
           }
         }
       } catch (Exception e) {
