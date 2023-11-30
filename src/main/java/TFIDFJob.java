@@ -45,6 +45,9 @@ public class TFIDFJob {
     private final ObjectMapper mapper = new ObjectMapper();
     private final Set<String> stopWords = new HashSet<>();
 
+    public TFTokenizer() {
+    }
+
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
       try {
@@ -68,7 +71,6 @@ public class TFIDFJob {
     }
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-      // Your existing map function remains unchanged
 
       context.getCounter(Counters.TOTAL_RECORDS).increment(1);
       try {
