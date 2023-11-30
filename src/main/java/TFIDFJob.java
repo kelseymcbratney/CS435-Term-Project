@@ -47,7 +47,7 @@ public class TFIDFJob {
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
     private final Text RatingUnigramCount = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
-    private static Set<String> stopWords;
+    private static Set<String> stopWords = new HashSet<>();
 
     public void setup(Context context) throws IOException, InterruptedException {
       URI[] cacheFiles = context.getCacheFiles();
