@@ -19,7 +19,7 @@ public class SentimentLauncher {
       System.exit(-1);
     }
 
-    Job job = Job.getInstance(conf, "TF-IDF Job");
+    Job job = Job.getInstance(conf, "TF Job");
 
     job.setJarByClass(TFIDFJob.class);
 
@@ -36,7 +36,7 @@ public class SentimentLauncher {
 
     job.waitForCompletion(true);
 
-    Job job2 = Job.getInstance(conf, "Combine Job");
+    Job job2 = Job.getInstance(conf, "TF Combine Job");
     job2.setJarByClass(TFIDFJob.class); // Fix: Change job to job2
 
     // Set the mapper and reducer classes

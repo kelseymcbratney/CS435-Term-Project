@@ -180,27 +180,27 @@ public class TFIDFJob {
     private final IntWritable count = new IntWritable();
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-      String[] parts = value.toString().split("\\s+", 2);
+      String[] parts = value.toString().split(":");
       if (parts.length == 2) {
-        rating.set(parts[0]);
-        count.set(Integer.parseInt(parts[1]));
+        rating.set(parts[0].trim());
+        count.set(Integer.parseInt(parts[1].trim().replaceAll("[^0-9]", "")));
         context.write(rating, count);
       }
     }
   }
 
-public static class CombineReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+  public static class CombineReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
     private final IntWritable result = new IntWritable();
 
     public void reduce(Text key, Iterable<IntWritable> values, Context context)
-            throws IOException, InterruptedException {
-        int sum = 0;
-        for (IntWritable value : values) {
-            sum += value.get();
-        }
-        result.set(sum);
-        context.write(key, result);
+        throws IOException, InterruptedException {
+      int sum = 0;
+      for (IntWritable value : values) {
+        sum += value.get();
+      }
+      result.set(sum);
+      context.write(key, result);
     }
-}
+  }
 
 }
