@@ -224,15 +224,17 @@ public class TFIDFJob {
       // Iterate over the values again to calculate TF-IDF and emit the result
       for (String value : tfList) {
         String[] parts = value.toString().split("\t");
+        System.err.println("Parts: " + parts.toString());
         if (parts.length >= 3) {
           String unigram = parts[1]; // Assuming the unigram is at index 1
           rating = parts[0]; // Assuming the rating is at index 0
           double tf = Double.parseDouble(parts[2]);
 
+          double idf = Math.log10((double) totalReviewCount / (double) documentFrequency);
+
           double tfidf = tf * idf;
 
           result.set(rating + "\t" + unigram + "\t" + tfidf);
-          System.err.println("Result: " + result.toString());
           context.write(key, result);
         }
 
