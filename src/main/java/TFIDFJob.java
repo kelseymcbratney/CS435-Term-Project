@@ -213,21 +213,29 @@ public class TFIDFJob {
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       long totalReviewCount = context.getConfiguration().getLong("total_records", 0L);
-      List<String> tfList = new ArrayList<String>();
       int documentFrequency = 0;
-
-      System.err.println("Key: " + key.toString());
 
       // Collect values into a list
       List<String> valueList = new ArrayList<>();
       for (Text value : values) {
+        documentFrequency++;
         valueList.add(value.toString());
         String[] parts = value.toString().split("\t");
-        System.err.println("Parts: " + Arrays.toString(parts));
+
       }
 
-      // Print values using the list
-      System.err.println("Values: " + String.join(", ", valueList));
+      for (String value : valueList) {
+        String[] parts = value.toString().split("\t");
+        if (parts.length >= 3) {
+          String unigram = parts[1]; // Assuming the unigram is at index 1
+          rating = parts[0]; // Assuming the rating is at index 0
+          double tf = Double.parseDouble(parts[2]);
+          double idf = Math.log10((double) totalReviewCount / (double) documentFrequency);
+          double tfidf = tf * idf;
+          result.set(rating + "\t" + unigram + "\t" + tfidf);
+          context.write(key, result);
+        }
+      }
 
       // // Iterate over the values to calculate document frequency
       // for (Text value : values) {
