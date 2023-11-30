@@ -34,7 +34,6 @@ public class TFIDFJob {
     private final Text docID = new Text();
     private final Text RatingUnigramCount = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
-    private static int counter = 0; // Counter for generating unique IDs
     private static Set<String> stopWords;
 
     static {
@@ -165,6 +164,7 @@ public class TFIDFJob {
     private String rating;
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+      System.err.println("Reducer key: " + key.toString());
       // Initialize a map to store the count of each unigram
       Map<String, Integer> unigramCountMap = new HashMap<>();
 
