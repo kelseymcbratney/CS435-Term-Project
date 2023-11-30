@@ -53,6 +53,7 @@ public class TFIDFJob {
         for (URI cacheFile : cacheFiles) {
           BufferedReader reader = new BufferedReader(new FileReader("stopwords.txt"));
           String line;
+          System.out.err.println("Reading stopwords file: " + cacheFile.toString());
           while ((line = reader.readLine()) != null) {
             stopWords.add(line.trim());
           }
