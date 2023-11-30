@@ -50,15 +50,15 @@ public class TFIDFJob {
       // Read stopwords from the distributed cache
       URI[] cacheFiles = DistributedCache.getCacheFiles(context.getConfiguration());
       if (cacheFiles != null && cacheFiles.length > 0) {
+        for (URI cacheFile : cacheFiles) {
+          BufferedReader reader = new BufferedReader(new FileReader("stopwords.txt"));
+          String line;
+          while ((line = reader.readLine()) != null) {
+            stopWords.add(line.trim());
+          }
 
-        BufferedReader reader = new BufferedReader(new FileReader("stopwords.txt"));
-        String line;
-        while ((line = reader.readLine()) != null) {
-          stopWords.add(line.trim());
+          reader.close();
         }
-
-        reader.close();
-
       }
     }
 
