@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang3.tuple.Triple;
 
 public class TFIDFJob {
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
