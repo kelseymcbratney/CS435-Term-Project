@@ -226,7 +226,6 @@ public class TFIDFJob {
 
       for (String value : valueList) {
         String[] parts = value.toString().split("\t");
-        System.out.println(Arrays.toString(parts));
         if (parts.length >= 4) {
           String reviewID = parts[0];
           rating = parts[1];
