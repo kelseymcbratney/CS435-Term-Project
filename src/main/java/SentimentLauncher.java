@@ -36,15 +36,13 @@ public class SentimentLauncher {
 
     job1.waitForCompletion(true);
 
+    // Set up the first map-reduce job to calculate term frequency (TF)
+    Job job2 = Job.getInstance(conf, "TF Job");
+
     Counter totalRecords = TFIDFJob.getTotalRecordsCounter();
     job2.getConfiguration().set("total_records", Long.toString(totalRecords.getValue()));
 
-    Job job2 = Job.getInstance(conf, "TF Job");
-
     job2.setJarByClass(TFIDFJob.class);
-    job2.getConfiguration().set("total_records", Long.toString(counter.getValue()));
-
-    // Set up the first map-reduce job to calculate term frequency (TF)
     job2.setMapperClass(TFIDFJob.TFTokenizer.class);
     job2.setMapOutputKeyClass(Text.class);
     job2.setMapOutputValueClass(Text.class);
