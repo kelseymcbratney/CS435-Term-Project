@@ -181,9 +181,9 @@ public class TFIDFJob {
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       String[] parts = value.toString().split("\\s+");
-      if (parts.length == 3) {
+      if (parts.length >= 2) {
         rating.set(parts[0].trim());
-        count.set(Integer.parseInt(parts[2].trim()));
+        count.set(Integer.parseInt(parts[1].trim()));
         context.write(rating, count);
       }
     }
