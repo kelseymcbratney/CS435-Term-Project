@@ -74,6 +74,7 @@ public class TFIDFJob {
           BufferedReader reader = new BufferedReader(new InputStreamReader(fs.open(getFilePath)));
 
           while ((line = reader.readLine()) != null) {
+            System.err.println("Adding stop word: " + line.trim());
             stopWords.add(line.trim());
           }
         }
