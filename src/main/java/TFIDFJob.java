@@ -215,6 +215,8 @@ public class TFIDFJob {
       List<String> tfList = new ArrayList<String>();
       int documentFrequency = 0;
 
+      System.err.println(key.toString());
+
       // Iterate over the values to calculate document frequency
       for (Text value : values) {
         tfList.add(value.toString());
@@ -222,8 +224,8 @@ public class TFIDFJob {
       }
 
       // Iterate over the values again to calculate TF-IDF and emit the result
-      for (String value : tfList) {
-        String[] parts = value.toString().split("\t");
+      for (String tfValue : tfList) {
+        String[] parts = tfValue.toString().split("\t");
         System.err.println("Parts: " + parts.toString());
         if (parts.length >= 3) {
           String unigram = parts[1]; // Assuming the unigram is at index 1
