@@ -227,11 +227,13 @@ public class TFIDFJob {
           String unigram = parts[1]; // Assuming the unigram is at index 1
           rating = parts[0]; // Assuming the rating is at index 0
           double tf = Double.parseDouble(parts[2]);
-        }
-        double tfidf = tf * idf;
 
-        result.set(rating + "\t" + unigram + "\t" + tfidf);
-        context.write(key, result);
+          double tfidf = tf * idf;
+
+          result.set(rating + "\t" + unigram + "\t" + tfidf);
+          context.write(key, result);
+        }
+
       }
     }
   }
