@@ -232,8 +232,10 @@ public class TFIDFJob {
       // Calculate IDF
       double idf = Math.log((double) totalDocs / (double) (docCount + 1)); // Add 1 to avoid divide by zero
 
+      // Emit key in the format: overallIDF:unigram
+      String outputKey = idf + ":" + key.toString();
       idfWritable.set(idf);
-      context.write(key, idfWritable);
+      context.write(new Text(outputKey), idfWritable);
     }
   }
 
