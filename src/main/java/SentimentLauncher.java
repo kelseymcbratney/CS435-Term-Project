@@ -19,12 +19,10 @@ public class SentimentLauncher {
       System.exit(-1);
     }
 
-    // Add the stop words file to the DistributedCache
-    DistributedCache.addCacheFile(new URI(args[2]), conf);
-
     Job job1 = Job.getInstance(conf, "TF Job");
 
     job1.setJarByClass(TFIDFJob.class);
+    job1.addCacheFile(new URI(args[2]));
 
     // Set up the first map-reduce job to calculate term frequency (TF)
     job1.setMapperClass(TFIDFJob.TFTokenizer.class);
