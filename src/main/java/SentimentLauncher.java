@@ -14,10 +14,13 @@ public class SentimentLauncher {
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
 
-    if (args.length != 2) {
-      System.err.println("Usage: SentimentLauncher <input path> <output path>");
+    if (args.length != 3) {
+      System.err.println("Usage: SentimentLauncher <input path> <output path> <stopwords file>");
       System.exit(-1);
     }
+
+    // Add the stop words file to the DistributedCache
+    DistributedCache.addCacheFile(new URI(args[2]), conf);
 
     Job job1 = Job.getInstance(conf, "TF Job");
 
@@ -54,22 +57,5 @@ public class SentimentLauncher {
     FileOutputFormat.setOutputPath(job2, new Path(args[1] + "/tfidf"));
 
     job2.waitForCompletion(true);
-
-    //
-    // // Set up the third map-reduce job to calculate TF-IDF
-    // job = Job.getInstance(conf, "TF-IDF Job - TF-IDF");
-    //
-    // job.setJarByClass(TFIDFJob.class);
-    // job.setMapperClass(TFIDFJob.TFMapper.class);
-    // job.setMapOutputKeyClass(Text.class);
-    // job.setMapOutputValueClass(Text.class);
-    // job.setReducerClass(TFIDFJob.TFIDFReducer.class);
-    // job.setOutputKeyClass(Text.class);
-    // job.setOutputValueClass(Text.class);
-    //
-    // FileInputFormat.addInputPath(job, new Path(args[0]));
-    // FileOutputFormat.setOutputPath(job, new Path(args[1] + "/tfidf"));
-    //
-    // System.exit(job.waitForCompletion(true) ? 0 : 1);
   }
 }
