@@ -48,20 +48,9 @@ public class TFIDFJob {
     private static Set<String> stopWords;
 
     public void setup(Context context) throws IOException, InterruptedException {
-      // Read stopwords from the distributed cache
-      URI[] cacheFiles = DistributedCache.getCacheFiles(context.getConfiguration());
-      if (cacheFiles != null && cacheFiles.length > 0) {
-        for (URI cacheFile : cacheFiles) {
-          File file = new File(cacheFile.getPath());
-          System.err.println("Reading stopwords file: " + file.getAbsolutePath());
-          BufferedReader reader = new BufferedReader(new FileReader(file));
-          String line;
-          while ((line = reader.readLine()) != null) {
-            stopWords.add(line.trim());
-          }
-
-          reader.close();
-        }
+      Path[] localFiles = DistributedCache.getLocalCacheFiles();
+      if (localFiles.length > 0) {
+        brReader = new BufferedReader(new FileReader(localFiles[0].toString()));
       }
     }
 
