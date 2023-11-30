@@ -32,8 +32,7 @@ public class TFIDFJob {
 
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
     private final Text word = new Text();
-    private final Text docId = new Text();
-    private final Text rating = new Text();
+    private final Text docIdRatingAndTF = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
     private static int counter = 0; // Counter for generating unique IDs
     private static Set<String> stopWords;
@@ -144,10 +143,9 @@ public class TFIDFJob {
         while (tokenizer.hasMoreTokens()) {
           String token = tokenizer.nextToken();
           if (!stopWords.contains(token)) {
-            docId.set(Integer.toString(uniqueId));
-            word.set(token);
-            rating.set(overall);
-            context.write(docId, new Text(rating.toString() + ", " + "1" + ", " + word.toString()));
+            docIdRatingAndTF.set(overall + ", " + "1" + ", " + token);
+            word.set(Integer.toString(uniqueId));
+            context.write(word, docIdRatingAndTF);
           }
         }
       } catch (Exception e) {
