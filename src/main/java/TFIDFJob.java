@@ -209,10 +209,10 @@ public class TFIDFJob {
       if (parts.length >= 2) {
         String docId = parts[0];
         String rating = parts[1].split(" ")[0]; // Extract the rating
-        String termFreq = parts[1].substring(rating.length()).trim(); // Extract the rest of the line
+        String unigramValue = parts[1].substring(rating.length()).trim(); // Extract the rest of the line
 
-        unigram.set(termFreq); // Set the unigram as the key
-        docIdRatingAndTF.set(docId + ":" + rating + ":" + termFreq); // Set docId:rating:tf as the value
+        unigram.set(unigramValue); // Set the unigram as the key
+        docIdRatingAndTF.set(docId + ":" + rating + ":" + unigramValue); // Set docId:rating:tf as the value
         context.write(unigram, docIdRatingAndTF);
       }
     }
