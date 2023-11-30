@@ -181,8 +181,11 @@ public class TFIDFJob {
         resultBuilder.append(unigram).append(":").append(tf).append(", ");
       }
 
+      // Set the result text
+      result.set(resultBuilder.toString());
+
       // Emit the result for the key (overall rating)
-      context.write(key, new Text(rating));
+      context.write(new Text(rating), result);
     }
   }
 
