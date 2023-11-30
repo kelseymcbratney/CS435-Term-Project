@@ -37,20 +37,20 @@ public class SentimentLauncher {
 
     // Set up the second map-reduce job to calculate inverse document frequency
     // (IDF)
-    Job job2 = Job.getInstance(conf, "TF-IDF Job - IDF");
-
-    job2.setJarByClass(TFIDFJob.class);
-    job2.setMapperClass(TFIDFJob.TFIDFMapper.class);
-    job2.setMapOutputKeyClass(Text.class);
-    job2.setMapOutputValueClass(Text.class);
-    job2.setReducerClass(TFIDFJob.TFIDFReducer.class);
-    job2.setOutputKeyClass(Text.class);
-    job2.setOutputValueClass(Text.class);
-
-    FileInputFormat.addInputPath(job2, new Path(args[1] + "/tf"));
-    FileOutputFormat.setOutputPath(job2, new Path(args[1] + "/tfidf"));
-
-    job2.waitForCompletion(true);
+    // Job job2 = Job.getInstance(conf, "TF-IDF Job - IDF");
+    //
+    // job2.setJarByClass(TFIDFJob.class);
+    // job2.setMapperClass(TFIDFJob.TFIDFMapper.class);
+    // job2.setMapOutputKeyClass(Text.class);
+    // job2.setMapOutputValueClass(Text.class);
+    // job2.setReducerClass(TFIDFJob.TFIDFReducer.class);
+    // job2.setOutputKeyClass(Text.class);
+    // job2.setOutputValueClass(Text.class);
+    //
+    // FileInputFormat.addInputPath(job2, new Path(args[1] + "/tf"));
+    // FileOutputFormat.setOutputPath(job2, new Path(args[1] + "/tfidf"));
+    //
+    // job2.waitForCompletion(true);
     //
     // // Set up the third map-reduce job to calculate TF-IDF
     // job = Job.getInstance(conf, "TF-IDF Job - TF-IDF");
