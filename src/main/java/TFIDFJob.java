@@ -239,7 +239,7 @@ public class TFIDFJob {
 
             // Create a new Text object for each emission
             Text resultText = new Text(rating + "\t" + unigram + "\t" + tfidf);
-            context.write(key, resultText);
+            context.write(new Text(key.toString()), resultText);
           } catch (NumberFormatException e) {
             // Handle the case where tfString is not a valid double
             System.err.println("Error parsing TF value: " + tfString);
