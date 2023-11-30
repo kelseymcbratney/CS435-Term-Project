@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.hadoop.mapreduce.Counter;
 
 public class TFIDFJob {
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
