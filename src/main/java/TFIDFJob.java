@@ -221,8 +221,7 @@ public class TFIDFJob {
     private final DoubleWritable idfWritable = new DoubleWritable();
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      int totalDocs = context.getConfiguration().getInt("totalDocs", 1); // Get the total number of documents from
-                                                                         // configuration
+      long totalDocs = context.getConfiguration().getLong("total_records", 0L);
 
       int docCount = 0;
       for (Text value : values) {
