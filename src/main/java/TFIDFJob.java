@@ -20,6 +20,10 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.hadoop.mapreduce.Counter;
 
 public class TFIDFJob {
+  public static enum Counters {
+    TOTAL_RECORDS
+  }
+
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
     private final Text word = new Text();
     private final Text docId = new Text();
@@ -114,10 +118,6 @@ public class TFIDFJob {
       stopWords.add("very");
       stopWords.add("with");
       stopWords.add("without");
-    }
-
-    public static enum Counters {
-      TOTAL_RECORDS
     }
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
