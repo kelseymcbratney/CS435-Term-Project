@@ -151,11 +151,12 @@ public class TFIDFJob {
     private final Text result = new Text();
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      // Initialize a map to store the count of each unigram
-      Map<String, Integer> unigramCountMap = new HashMap<>();
+      // Initialize a list to store unigram and its corresponding TF and total term
+      // count
+      List<Triple<String, Double, Integer>> unigramList = new ArrayList<>();
       int totalTerms = 0;
 
-      // Iterate through the values and count the occurrences of each unigram
+      // Iterate through the values and store unigram, TF, and total term count
       for (Text value : values) {
         String[] parts = value.toString().split(":");
         String unigram = parts[0];
@@ -163,16 +164,19 @@ public class TFIDFJob {
         int termsInDocument = Integer.parseInt(parts[2]);
         totalTerms += termsInDocument;
 
-        // Update the count in the map
-        unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + 1);
+        unigramList.add(new ImmutableTriple<>(unigram, tf, termsInDocument));
       }
 
-      // Build the result string with unigram frequencies
+      // Sort the unigram list by TF in descending order
+      unigramList.sort(Comparator.comparing(Triple::getMiddle).reversed());
+
+      // Build the result string with unigram, TF, rank, and total term count
       StringBuilder resultBuilder = new StringBuilder();
-      for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
-        String unigram = entry.getKey();
-        double tf = (double) entry.getValue() / totalTerms;
-        resultBuilder.append(unigram).append(":").append(tf).append(", ");
+      int rank = 1;
+      for (Triple<String, Double, Integer> triple : unigramList) {
+        String unigram = triple.getLeft();
+        double tf = triple.getMiddle();
+        resultBuilder.append(unigram).append(":").append(tf).append(", Rank:").append(rank++).append(", ");
       }
 
       // Set the result text
