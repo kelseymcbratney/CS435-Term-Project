@@ -27,7 +27,7 @@ public class SentimentLauncher {
     job1.setMapperClass(TFIDFJob.TFTokenizer.class);
     job1.setMapOutputKeyClass(Text.class);
     job1.setMapOutputValueClass(Text.class);
-    job1.setReducerClass(TFIDFJob.SumReducer.class);
+    job1.setReducerClass(TFIDFJob.TFReducer.class);
     job1.setOutputKeyClass(Text.class);
     job1.setOutputValueClass(Text.class);
 
