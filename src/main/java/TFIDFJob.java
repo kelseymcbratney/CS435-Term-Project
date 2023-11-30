@@ -1,4 +1,4 @@
-package SgntimentLauncher;
+package SentimentLauncher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -201,7 +201,7 @@ public class TFIDFJob {
     }
   }
 
-  public static class IDFMapper extends Mapper<LongWritable, Text, Text, Text> {
+  public static class IDFMapper extends Mapper<Text, Text, Text, Text> {
     private final Text unigram = new Text();
     private final Text docIdRatingAndTF = new Text();
 
