@@ -86,7 +86,7 @@ public class TFIDFJob {
   public static class TFIDFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final static Text result = new Text();
 
-    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // Continue with your processing
 
       context.write(new Text(key), new Text(value));
