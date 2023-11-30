@@ -50,7 +50,7 @@ public class TFIDFJob {
     public void setup(Context context) throws IOException, InterruptedException {
       Path[] localFiles = DistributedCache.getLocalCacheFiles();
       if (localFiles.length > 0) {
-        brReader = new BufferedReader(new FileReader(localFiles[0].toString()));
+        BufferedReader brReader = new BufferedReader(new FileReader(localFiles[0].toString()));
       }
     }
 
