@@ -44,11 +44,12 @@ public class TFIDFJob {
     private final Text RatingUnigramCount = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
     private static Set<String> stopWords;
+    private Path stopWordsFiles;
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       try {
         // Retrieve the stop words file from the distributed cache
-        Path[] stopWordsFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
+        stopWordsFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
         if (stopWordsFiles != null && stopWordsFiles.length > 0) {
           loadStopWords(stopWordsFiles[0]);
         }
@@ -56,7 +57,7 @@ public class TFIDFJob {
         System.err.println("Error loading stop words file: " + e.getMessage());
       }
 
-      try (BufferedReader br = new BufferedReader(new FileReader(stopWordsFile.toString()))) {
+      try (BufferedReader br = new BufferedReader(new FileReader(stopWordsFiles.toString()))) {
         String line;
         while ((line = br.readLine()) != null) {
           stopWords.add(line.trim().toLowerCase());
