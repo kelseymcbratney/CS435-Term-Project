@@ -51,7 +51,7 @@ public class SentimentLauncher {
     FileInputFormat.addInputPath(job, new Path(args[1] + "/tf")); // Replace with your actual input path
     FileOutputFormat.setOutputPath(job, new Path(args[1] + "/combinedtf")); // Replace with your desired output path
 
-    // job.waitForCompletion(true);
+    job2.waitForCompletion(true);
     //
     // // Set up the third map-reduce job to calculate TF-IDF
     // job = Job.getInstance(conf, "TF-IDF Job - TF-IDF");
