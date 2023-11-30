@@ -38,10 +38,9 @@ public class SentimentLauncher {
 
     Job job2 = Job.getInstance(conf, "TFIDF Job");
 
-    // Counter totalRecordsCounter =
-    // job1.getCounters().findCounter(TFIDFJob.Counters.TOTAL_RECORDS);
+    Counter totalRecordsCounter = job1.getCounters().findCounter(TFIDFJob.Counters.TOTAL_RECORDS);
 
-    // job2.getConfiguration().set("total_records",Long.toString(totalRecordsCounter.getValue()));
+    job2.getConfiguration().set("total_records", Long.toString(totalRecordsCounter.getValue()));
     job2.setJarByClass(TFIDFJob.class);
 
     job2.setMapperClass(TFIDFJob.TFIDFMapper.class);
