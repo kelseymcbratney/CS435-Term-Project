@@ -1,4 +1,4 @@
-package SentimentLauncher;
+package SgntimentLauncher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -203,18 +203,19 @@ public class TFIDFJob {
 
   public static class IDFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final Text unigram = new Text();
-    private final Text tfValue = new Text();
+    private final Text docIdRatingAndTF = new Text();
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // Input format: key = line number, value = entire line
       String[] parts = value.toString().split("\t"); // Assuming tab-separated input
       if (parts.length >= 2) {
         String docId = parts[0];
-        String termFreq = parts[1];
+        String rating = parts[1].split(" ")[0]; // Extract the rating
+        String termFreq = parts[1].substring(rating.length()).trim(); // Extract the rest of the line
 
-        unigram.set(parts[0]); // Set the unigram as the key
-        tfValue.set(termFreq); // Set the TF value as the value
-        context.write(unigram, tfValue);
+        unigram.set(termFreq); // Set the unigram as the key
+        docIdRatingAndTF.set(docId + ":" + rating + ":" + termFreq); // Set docId:rating:tf as the value
+        context.write(unigram, docIdRatingAndTF);
       }
     }
   }
