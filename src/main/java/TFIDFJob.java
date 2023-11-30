@@ -239,11 +239,11 @@ public class TFIDFJob {
     }
   }
 
-  public static class CombineMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+  public static class CombineMapper extends Mapper<Text, Text, Text, IntWritable> {
     private final Text rating = new Text();
     private final IntWritable count = new IntWritable();
 
-    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
       String[] parts = value.toString().split(":|,"); // Split by colon or comma
       if (parts.length >= 2) {
         rating.set(parts[0].trim());
