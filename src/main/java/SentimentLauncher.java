@@ -47,8 +47,8 @@ public class SentimentLauncher {
     job2.setOutputValueClass(IntWritable.class);
 
     // Set the input and output paths
-    FileInputFormat.addInputPath(job, new Path(args[1] + "/tf"); // Replace with your actual input path
-    FileOutputFormat.setOutputPath(job, new Path(args[1] + "/combinedtf"))); // Replace with your desired output path
+    FileInputFormat.addInputPath(job, new Path(args[1] + "/tf")); // Replace with your actual input path
+    FileOutputFormat.setOutputPath(job, new Path(args[1] + "/combinedtf")); // Replace with your desired output path
 
     // job.waitForCompletion(true);
     //
