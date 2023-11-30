@@ -61,12 +61,15 @@ public class TFIDFJob {
       // Iterate through the values and count the occurrences of each unigram
       for (Text value : values) {
         String[] parts = value.toString().split(", ");
-        String unigram = parts[2]; // Assuming the unigram is at index 2
-        int count = Integer.parseInt(parts[1]); // Assuming the count is at index 1
-        rating = parts[0];
-
-        // Update the count in the map
-        unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
+        for (String part : parts) {
+          String[] keyValue = part.split(":");
+          if (keyValue.length == 2) {
+            String unigram = keyValue[0];
+            int count = Integer.parseInt(keyValue[1]);
+            rating = unigram; // Set the rating to the last unigram encountered
+            unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
+          }
+        }
       }
 
       // Build the result string with unigram frequencies
