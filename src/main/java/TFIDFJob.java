@@ -195,13 +195,11 @@ public class TFIDFJob {
 
         // Append the unigram and its frequency
         resultBuilder.append(unigram).append("\t").append(count).append("\n");
+        // Set the result text
+        result.set(resultBuilder.toString().trim()); // Trim to remove trailing newline
+        // Emit the result for the key (DocID)
+        context.write(key, result);
       }
-
-      // Set the result text
-      result.set(resultBuilder.toString().trim()); // Trim to remove trailing newline
-
-      // Emit the result for the key (DocID)
-      context.write(key, result);
     }
   }
 
