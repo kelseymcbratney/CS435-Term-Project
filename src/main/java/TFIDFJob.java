@@ -200,4 +200,17 @@ public class TFIDFJob {
     }
   }
 
+  public static class TFIDFMapper extends Mapper<Text, Text, Text, Text> {
+    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
+      context.write(key, value);
+    }
+  }
+
+  public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+      context.write(key, values.iterator().next());
+
+    }
+
+  }
 }
