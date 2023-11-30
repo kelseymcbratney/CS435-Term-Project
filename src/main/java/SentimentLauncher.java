@@ -50,8 +50,8 @@ public class SentimentLauncher {
     job2.setOutputKeyClass(Text.class);
     job2.setOutputValueClass(Text.class);
 
-    FileInputFormat.addInputPath(job2, new Path(new Path(args[1]), "tf"));
-    FileOutputFormat.setOutputPath(job2, new Path(new Path(args[1]), "tfidf"));
+    FileInputFormat.addInputPath(job1, new Path(args[1] + "/tf")
+    FileOutputFormat.setOutputPath(job1, new Path(args[1] + "/tfidf"));
 
     job2.waitForCompletion(true);
 
