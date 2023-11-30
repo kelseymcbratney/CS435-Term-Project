@@ -200,7 +200,7 @@ public class TFIDFJob {
     }
   }
 
-  public static class TFIDFMapper extends Mapper<Text, Text, Text, Text> {
+  public static class TFIDFMapper extends Mapper<LongWritable, Text, Text, Text> {
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
       context.write(key, value);
     }
