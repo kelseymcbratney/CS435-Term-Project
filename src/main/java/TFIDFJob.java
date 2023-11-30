@@ -89,7 +89,7 @@ public class TFIDFJob {
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
       // Continue with your processing
 
-      context.write(key, New Text(value));
+      context.write(key, new Text(value));
     }
   }
 
