@@ -12,5 +12,5 @@ mv *.class SentimentLauncher/
 jar cfm SentimentLauncher.jar Manifest.txt SentimentLauncher/
 
 hadoop fs -rm -r /SentimentAnalysis/tf
-hadoop fs -rm -r /SentimentAnalysis/idf
+hadoop fs -rm -r /SentimentAnalysis/combinedtf
 hadoop fs -rm -r /SentimentAnalysis/tfidf
