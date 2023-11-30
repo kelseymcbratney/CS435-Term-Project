@@ -226,6 +226,7 @@ public class TFIDFJob {
 
       for (String value : valueList) {
         String[] parts = value.toString().split("\t");
+        System.out.println(Arrays.toString(parts));
         if (parts.length >= 3) {
           String unigram = parts[1]; // Assuming the unigram is at index 1
           rating = parts[0]; // Assuming the rating is at index 0
@@ -247,31 +248,6 @@ public class TFIDFJob {
         }
       }
 
-      // // Iterate over the values to calculate document frequency
-      // for (Text value : values) {
-      // tfList.add(value.toString());
-      // documentFrequency++;
-      // }
-
-      // Iterate over the values again to cal culate TF-IDF and emit the result gg
-      // for (String tfValue : tfList) {
-      // String[] parts = tfValue.toString().split("\t");
-      // System.err.println("Parts: " + parts.toString());
-      // if (parts.length >= 3) {
-      // String unigram = parts[1]; // Assuming the unigram is at index 1
-      // rating = parts[0]; // Assuming the rating is at index 0
-      // double tf = Double.parseDouble(parts[2]);
-      //
-      // double idf = Math.log10((double) totalReviewCount / (double)
-      // documentFrequency);
-      //
-      // double tfidf = tf * idf;
-      //
-      // result.set(rating + "\t" + unigram + "\t" + tfidf);
-      // context.write(key, result);
-      // }
-      //
-      // }
     }
   }
 
