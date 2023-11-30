@@ -1,4 +1,4 @@
-package SentimentLauncher;
+package SentimentLauncher
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -219,7 +219,7 @@ public class TFIDFJob {
         documentFrequency++;
       }
 
-      System.err.println(dodcumetFrequency);
+      System.err.println(documentFrequency);
 
       // Calculate IDF
       double idf = Math.log((double) totalReviewCount / (double) (documentFrequency + 1));
