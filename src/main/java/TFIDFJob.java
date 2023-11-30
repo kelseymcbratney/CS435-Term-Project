@@ -47,6 +47,7 @@ public class TFIDFJob {
       stopWords.add("nor");
       stopWords.add("so");
       // Add prepositions
+      stopWords.add("a");
       stopWords.add("as");
       stopWords.add("aboard");
       stopWords.add("about");
@@ -104,6 +105,7 @@ public class TFIDFJob {
       stopWords.add("until");
       stopWords.add("up");
       stopWords.add("upon");
+      stopWords.add("very");
       stopWords.add("with");
       stopWords.add("without");
     }
