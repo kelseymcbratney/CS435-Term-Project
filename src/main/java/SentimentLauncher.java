@@ -37,7 +37,7 @@ public class SentimentLauncher {
 
     // Set up the second map-reduce job to calculate inverse document frequency
     // (IDF)
-    job2 = Job.getInstance(conf, "TF-IDF Job - IDF");
+    Job job2 = Job.getInstance(conf, "TF-IDF Job - IDF");
 
     job2.setJarByClass(TFIDFJob.class);
     job2.setMapperClass(TFIDFJob.TFIDFReducer.class);
