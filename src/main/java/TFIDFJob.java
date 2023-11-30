@@ -80,6 +80,7 @@ public class TFIDFJob {
 
       // Emit the result for the key (docId)
       context.write(rating, result);
+      // blah
     }
   }
 
