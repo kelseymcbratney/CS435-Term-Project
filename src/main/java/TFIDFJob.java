@@ -183,7 +183,6 @@ public class TFIDFJob {
 
           // Accumulate total words
           totalWords += count;
-          System.err.println(unigramCountMap);
         } else {
           // Log a warning or handle the unexpected format
           System.err.println("Unexpected format: " + value.toString());
