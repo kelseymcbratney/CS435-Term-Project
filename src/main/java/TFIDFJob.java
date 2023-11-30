@@ -188,7 +188,7 @@ public class TFIDFJob {
         // Calculate TF (Term Frequency)
         double tf = (double) count / totalWords;
 
-        resultBuilder.append(rating)append(unigram).append("\t").append(tf);
+        resultBuilder.append(rating).append(unigram).append("\t").append(tf);
       }
 
       // Set the result text
