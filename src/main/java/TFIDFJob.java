@@ -25,7 +25,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import java.net.URI;
 import java.io.File;
-import java.io.InputStreamReader;
+import java.io.InputStreamReader;t
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -74,12 +74,7 @@ public class TFIDFJob {
           BufferedReader reader = new BufferedReader(new InputStreamReader(fs.open(getFilePath)));
 
           while ((line = reader.readLine()) != null) {
-            String[] words = line.split(" ");
-
-            for (int i = 0; i < words.length; i++) {
-              // add the words to ArrayList
-              stopWords.add(words[i]);
-            }
+            stopWords.add(line.trim());
           }
         }
 
