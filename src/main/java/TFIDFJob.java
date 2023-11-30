@@ -158,7 +158,7 @@ public class TFIDFJob {
     }
   }
 
-  public static class UFReducer extends Reducer<Text, Text, Text, Text> {
+  public static class TFReducer extends Reducer<Text, Text, Text, Text> {
     private final Text result = new Text();
     private String rating;
 
@@ -200,83 +200,5 @@ public class TFIDFJob {
 
     }
   }
-
-  // public static class IDFMapper extends Mapper<Object, Text, Text, Text> {
-  // private final Text unigram = new Text();
-  // private final Text docIdRatingAndTF = new Text();
-  //
-  // public void map(Object key, Text value, Context context) throws IOException,
-  // InterruptedException {
-  // // Input format: key = line number, value = entire line
-  // String[] parts = value.toString().split(", "); // Assuming tab-separated
-  // input
-  // if (parts.length >= 2) {
-  // String docId = parts[0];
-  // String rating = parts[1].split(" ")[0]; // Extract the rating
-  // String unigramValue = parts[1].substring(rating.length()).trim(); // Extract
-  // the rest of the line
-  //
-  // unigram.set(unigramValue); // Set the unigram as the key
-  // docIdRatingAndTF.set(docId + ":" + rating + ":" + unigramValue); // Set
-  // docId:rating:tf as the value
-  // context.write(new Text(key), docIdRatingAndTF);
-  // }
-  // }
-  // }
-  //
-  // public static class IDFReducer extends Reducer<Text, Text, Text,
-  // DoubleWritable> {
-  // private final DoubleWritable idfWritable = new DoubleWritable();
-  //
-  // public void reduce(Text key, Iterable<Text> values, Context context) throws
-  // IOException, InterruptedException {
-  // long totalDocs = context.getConfiguration().getLong("total_records", 0L);
-  //
-  // int docCount = 0;
-  // for (Text value : values) {
-  // docCount++;
-  // }
-  //
-  // // Calculate IDF
-  // double idf = Math.log((double) totalDocs / (double) (docCount + 1)); // Add 1
-  // to avoid divide by zero
-  //
-  // // Emit key in the format: overallIDF:unigram
-  // String outputKey = idf + ":" + key.toString();
-  // idfWritable.set(idf);
-  // context.write(new Text(outputKey), idfWritable);
-  // }
-  // }
-
-  // public static class CombineMapper extends Mapper<Text, Text, Text,
-  // IntWritable> {
-  // private final Text rating = new Text();
-  // private final IntWritable count = new IntWritable();
-  //
-  // public void map(Text key, Text value, Context context) throws IOException,
-  // InterruptedException {
-  // String[] parts = value.toString().split(":|,"); // Split by colon or comma
-  // if (parts.length >= 2) {
-  // rating.set(parts[0].trim());
-  // count.set(Integer.parseInt(parts[1].trim().replaceAll("[^0-9]", "")));
-  // context.write(rating, count);
-  // }
-  // }
-  // }
-  //
-  // public static class CombineReducer extends Reducer<Text, IntWritable, Text,
-  // IntWritable> {
-  // private final IntWritable result = new IntWritable();
-  //
-  // public void reduce(Text key, Iterable<IntWritable> values, Context context)
-  // throws IOException, InterruptedException {
-  // int sum = 0;
-  // for (IntWritable value : values) {
-  // sum += value.get();
-  // }
-  // result.set(sum);
-  // context.write(key, result);
-  // }
-  // }
 
 }
