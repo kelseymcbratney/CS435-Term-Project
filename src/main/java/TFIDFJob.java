@@ -223,6 +223,7 @@ public class TFIDFJob {
 
       // Iterate over the values again to calculate TF-IDF and emit the result
       for (Text value : values) {
+        String[] parts = value.toString().split("\t");
         if (parts.length >= 3) {
           String unigram = parts[1]; // Assuming the unigram is at index 1
           rating = parts[0]; // Assuming the rating is at index 0
