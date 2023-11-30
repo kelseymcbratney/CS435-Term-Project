@@ -233,6 +233,7 @@ public class TFIDFJob {
           double tfidf = tf * idf;
 
           result.set(rating + "\t" + unigram + "\t" + tfidf);
+          System.err.println("Result: " + result.toString());
           context.write(key, result);
         }
 
