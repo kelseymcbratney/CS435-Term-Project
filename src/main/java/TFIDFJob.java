@@ -79,7 +79,7 @@ public class TFIDFJob {
       result.set(resultBuilder.toString());
 
       // Emit the result for the key (docId)
-      context.write(rating, result);
+      context.write(new Text(rating), result);
       // blah
     }
   }
