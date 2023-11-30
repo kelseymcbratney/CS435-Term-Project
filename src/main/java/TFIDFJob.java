@@ -173,7 +173,7 @@ public class TFIDFJob {
       }
 
       // Sort the unigram list by TF in descending order
-      unigramList.sort(Comparator.comparing(Triple::getMiddle).reversed());
+      unigramList.sort(Comparator.<Triple<String, Double, Integer>, Double>comparing(Triple::getMiddle).reversed());
 
       // Build the result string with unigram, TF, rank, and total term count
       StringBuilder resultBuilder = new StringBuilder();
