@@ -219,6 +219,8 @@ public class TFIDFJob {
         documentFrequency++;
       }
 
+      System.err.println(dodcumetFrequency);
+
       // Calculate IDF
       double idf = Math.log((double) totalReviewCount / (double) (documentFrequency + 1));
 
