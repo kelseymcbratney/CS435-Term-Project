@@ -201,19 +201,21 @@ public class TFIDFJob {
     }
   }
 
-  public static class IDFMapper extends Mapper<Text, Text, Text, Text> {
+  public static class IDFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final Text term = new Text();
     private final Text docCountAndTF = new Text();
 
-    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-      // Input format: key = term, value = docId:tf
-      String[] parts = value.toString().split(", ");
-      String docId = key.toString();
-      String termFreq = parts[0];
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+      // Input format: key = line number, value = entire line
+      String[] parts = value.toString().split("\t"); // Assuming tab-separated input
+      if (parts.length >= 2) {
+        String docId = parts[0];
+        String termFreq = parts[1];
 
-      term.set(parts[0]); // Set the term as the key
-      docCountAndTF.set(docId + ":" + termFreq); // Set docId:tf as the value
-      context.write(term, docCountAndTF);
+        term.set(parts[0]); // Set the term as the key
+        docCountAndTF.set(docId + ":" + termFreq); // Set docId:tf as the value
+        context.write(term, docCountAndTF);
+      }
     }
   }
 
