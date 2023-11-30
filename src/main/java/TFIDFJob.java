@@ -133,14 +133,15 @@ public class TFIDFJob {
 
         // Extract values
         String rating = jsonNode.get("overall").asText();
-        String reviewText = jsonNode.get("reviewText").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
+        String reviewerID = jsonNode.get("reviewerID").asText();
+        long unixReviewTime = jsonNode.get("unixReviewTime").asLong();
 
-        // Generate a unique ID using the counter
-        int uniqueId = counter++;
+        // Concatenate reviewerID and unixReviewTime to create a uniqueID
+        String uniqueID = reviewerID + "_" + unixReviewTime;
 
-        docID.set(Integer.toString(uniqueId));
         // Emit each unigram and its TF value separately
-        StringTokenizer tokenizer = new StringTokenizer(reviewText);
+        StringTokenizer tokenizer = new StringTokenizer(
+            jsonNode.get("reviewText").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase());
         while (tokenizer.hasMoreTokens()) {
           String unigram = tokenizer.nextToken();
           if (!stopWords.contains(unigram)) {
@@ -149,7 +150,7 @@ public class TFIDFJob {
 
             // Emit the unique ID (docID), rating, and unigram
             RatingUnigramCount.set(rating + "\t" + unigram + "\t" + "1");
-            context.write(docID, RatingUnigramCount);
+            context.write(new Text(uniqueID), RatingUnigramCount);
           }
         }
       } catch (Exception e) {
