@@ -199,11 +199,11 @@ public class TFIDFJob {
     }
   }
 
-  public static class IDFMapper extends Mapper<Text, Text, Text, Text> {
+  public static class IDFMapper extends Mapper<Object, Text, Text, Text> {
     private final Text unigram = new Text();
     private final Text docIdRatingAndTF = new Text();
 
-    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
       // Input format: key = line number, value = entire line
       String[] parts = value.toString().split("\t"); // Assuming tab-separated input
       if (parts.length >= 2) {
