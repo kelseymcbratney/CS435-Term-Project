@@ -47,21 +47,19 @@ public class TFIDFJob {
     private Path stopWordsFiles;
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-      try {
-        // Retrieve the stop words file from the distributed cache
-        stopWordsFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
-        if (stopWordsFiles != null && stopWordsFiles.length > 0) {
-          loadStopWords(stopWordsFiles[0]);
+      // Retrieve the stop words file from the distributed cache
+      URI[] stopWordsFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
+      if (stopWordsFiles != null && stopWordsFiles.length > 0) {
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(stopWordsFiles[0])))) {
+          String line;
+          while ((line = br.readLine()) != null) {
+            stopWords.add(line.trim().toLowerCase());
+          }
+        } catch (IOException e) {
+          System.err.println("Error loading stop words file: " + e.getMessage());
         }
-      } catch (IOException e) {
-        System.err.println("Error loading stop words file: " + e.getMessage());
-      }
-
-      try (BufferedReader br = new BufferedReader(new FileReader(stopWordsFiles.toString()))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-          stopWords.add(line.trim().toLowerCase());
-        }
+      } else {
+        System.err.println("Stop words file not found in the distributed cache");
       }
 
       context.getCounter(Counters.TOTAL_RECORDS).increment(1);
@@ -95,6 +93,7 @@ public class TFIDFJob {
         // Handle parsing errors
         System.err.println("Error parsing JSON: " + e.getMessage());
       }
+
     }
 
   }
