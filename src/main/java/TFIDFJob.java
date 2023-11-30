@@ -158,11 +158,52 @@ public class TFIDFJob {
     }
   }
 
-  public static class SumReducer extends Reducer<Text, Text, Text, Text> {
+  public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
+    private final Text result = new Text();
+
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+      // Initialize a map to store the count of each unigram
+      Map<String, Integer> unigramCountMap = new HashMap<>();
+
+      // Iterate through the values and count the occurrences of each unigram
+      int totalWords = 0; // Total words in the document for calculating TF
+
       for (Text value : values) {
-        context.write(key, value);
+        String[] parts = value.toString().split("\t");
+
+        // Check if the value has the expected format
+        if (parts.length >= 3) {
+          String unigram = parts[1]; // Assuming the unigram is at index 2
+          int count = Integer.parseInt(parts[2]); // Assuming the count is at index 1
+
+          // Update the count in the map
+          unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
+
+          // Accumulate total words
+          totalWords += count;
+        } else {
+          // Log a warning or handle the unexpected format
+          System.err.println("Unexpected format: " + value.toString());
+        }
       }
+
+      // Build the result string with TF values
+      StringBuilder resultBuilder = new StringBuilder();
+      for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
+        String unigram = entry.getKey();
+        int count = entry.getValue();
+
+        // Calculate TF (Term Frequency)
+        double tf = (double) count / totalWords;
+
+        resultBuilder.append(unigram).append("\t").append(tf).append("\n");
+      }
+
+      // Set the result text
+      result.set(resultBuilder.toString().trim()); // Trim to remove trailing newline
+
+      // Emit the result for the key (uniqueID)
+      context.write(key, result);
     }
   }
 
