@@ -202,8 +202,8 @@ public class TFIDFJob {
   }
 
   public static class IDFMapper extends Mapper<LongWritable, Text, Text, Text> {
-    private final Text term = new Text();
-    private final Text docCountAndTF = new Text();
+    private final Text unigram = new Text();
+    private final Text tfValue = new Text();
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // Input format: key = line number, value = entire line
@@ -212,9 +212,9 @@ public class TFIDFJob {
         String docId = parts[0];
         String termFreq = parts[1];
 
-        term.set(parts[0]); // Set the term as the key
-        docCountAndTF.set(docId + ":" + termFreq); // Set docId:tf as the value
-        context.write(term, docCountAndTF);
+        unigram.set(parts[0]); // Set the unigram as the key
+        tfValue.set(termFreq); // Set the TF value as the value
+        context.write(unigram, tfValue);
       }
     }
   }
