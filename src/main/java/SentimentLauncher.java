@@ -43,10 +43,10 @@ public class SentimentLauncher {
 
     job2.getConfiguration().set("total_records", Long.toString(totalRecordsCounter.getValue()));
     job2.setJarByClass(TFIDFJob.class);
-    job2.setMapperClass(TFIDFJob.TFTokenizer.class);
+    job2.setMapperClass(TFIDFJob.TFDMapper.class);
     job2.setMapOutputKeyClass(Text.class);
     job2.setMapOutputValueClass(Text.class);
-    job2.setReducerClass(TFIDFJob.SumReducer.class);
+    job2.setReducerClass(TFIDFJob.IDFReducer.class);
     job2.setOutputKeyClass(Text.class);
     job2.setOutputValueClass(Text.class);
 
