@@ -216,12 +216,17 @@ public class TFIDFJob {
       int documentFrequency = 0;
 
       System.err.println("Key: " + key.toString());
-      System.err.println("Values: " + values.iterator().next().toString());
 
+      // Collect values into a list
+      List<String> valueList = new ArrayList<>();
       for (Text value : values) {
+        valueList.add(value.toString());
         String[] parts = value.toString().split("\t");
-        System.err.println("Parts: " + parts.toString());
+        System.err.println("Parts: " + Arrays.toString(parts));
       }
+
+      // Print values using the list
+      System.err.println("Values: " + String.join(", ", valueList));
 
       // // Iterate over the values to calculate document frequency
       // for (Text value : values) {
