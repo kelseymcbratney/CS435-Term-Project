@@ -180,10 +180,10 @@ public class TFIDFJob {
     private final IntWritable count = new IntWritable();
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-      String[] parts = value.toString().split("\\s+");
+      String[] parts = value.toString().split(":|,"); // Split by colon or comma
       if (parts.length >= 2) {
         rating.set(parts[0].trim());
-        count.set(Integer.parseInt(parts[1].trim()));
+        count.set(Integer.parseInt(parts[1].trim().replaceAll("[^0-9]", "")));
         context.write(rating, count);
       }
     }
