@@ -112,7 +112,15 @@ public class TFIDFJob {
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       try {
-        // ... (parse JSON, process reviewText, generate uniqueId, etc.)
+        // Parse JSON
+        JsonNode jsonNode = mapper.readTree(value.toString());
+
+        // Extract values
+        String overall = jsonNode.get("overall").asText();
+        String reviewText = jsonNode.get("reviewText").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
+
+        // Generate a unique ID using the counter
+        int uniqueId = counter++;
 
         // Emit the values with unigrams, flipping word and docId
         StringTokenizer tokenizer = new StringTokenizer(reviewText);
