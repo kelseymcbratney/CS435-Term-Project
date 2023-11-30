@@ -129,20 +129,14 @@ public class TFIDFJob {
 
         // Emit the values with unigrams, flipping word and docId
         StringTokenizer tokenizer = new StringTokenizer(reviewText);
-        int totalTerms = 0;
-        Map<String, Integer> termFrequencyMap = new HashMap<>();
-
         while (tokenizer.hasMoreTokens()) {
           String token = tokenizer.nextToken();
           if (!stopWords.contains(token)) {
-            totalTerms++;
-            termFrequencyMap.put(token, termFrequencyMap.getOrDefault(token, 0) + 1);
+            docId.set(Integer.toString(uniqueId));
+            word.set(token);
+            rating.set(overall);
+            context.write(docId, new Text(rating.toString() + ", " + "1" + ", " + word.toString()));
           }
-        }
-
-        for (Map.Entry<String, Integer> entry : termFrequencyMap.entrySet()) {
-          double tf = (double) entry.getValue() / totalTerms;
-          context.write(docId, new Text(entry.getKey() + ":" + tf + ":" + totalTerms));
         }
       } catch (Exception e) {
         // Handle parsing errors
@@ -156,39 +150,33 @@ public class TFIDFJob {
     private final Text result = new Text();
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      // Initialize a list to store unigram and its corresponding TF and total term
-      // count
-      List<Triple<String, Double, Integer>> unigramList = new ArrayList<>();
-      int totalTerms = 0;
+      // Initialize a map to store the count of each unigram
+      Map<String, Integer> unigramCountMap = new HashMap<>();
 
-      // Iterate through the values and store unigram, TF, and total term count
+      // Iterate through the values and count the occurrences of each unigram
       for (Text value : values) {
-        String[] parts = value.toString().split(":");
-        String unigram = parts[0];
-        double tf = Double.parseDouble(parts[1]);
-        int termsInDocument = Integer.parseInt(parts[2]);
-        totalTerms += termsInDocument;
+        String[] parts = value.toString().split(", ");
+        String unigram = parts[2]; // Assuming the unigram is at index 2
+        int count = Integer.parseInt(parts[1]); // Assuming the count is at index 1
+        rating = parts[0];
 
-        unigramList.add(new ImmutableTriple<>(unigram, tf, termsInDocument));
+        // Update the count in the map
+        unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
       }
 
-      // Sort the unigram list by TF in descending order
-      unigramList.sort(Comparator.<Triple<String, Double, Integer>, Double>comparing(Triple::getMiddle).reversed());
-
-      // Build the result string with unigram, TF, rank, and total term count
+      // Build the result string with unigram frequencies and the overall rating
       StringBuilder resultBuilder = new StringBuilder();
-      int rank = 1;
-      for (Triple<String, Double, Integer> triple : unigramList) {
-        String unigram = triple.getLeft();
-        double tf = triple.getMiddle();
-        resultBuilder.append(unigram).append(":").append(tf).append(", Rank:").append(rank++).append(", ");
+      for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
+        resultBuilder.append(entry.getKey()).append(":").append(entry.getValue()).append(", ");
       }
+      // Append the overall rating
+      resultBuilder.append("overall:").append(rating);
 
       // Set the result text
       result.set(resultBuilder.toString());
 
-      // Emit the result for the key (rating)
-      context.write(key, result);
+      // Emit the result for the key (docId)
+      context.write(new Text(rating), result);
     }
   }
 
