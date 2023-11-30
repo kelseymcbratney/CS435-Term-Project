@@ -37,24 +37,26 @@ public class SentimentLauncher {
     job1.waitForCompletion(true);
 
     // Set up the first map-reduce job to calculate term frequency (TF)
-    Job job2 = Job.getInstance(conf, "TF Job");
-
-    Counter totalRecordsCounter = job1.getCounters().findCounter(TFIDFJob.Counters.TOTAL_RECORDS);
-
-    job2.getConfiguration().set("total_records", Long.toString(totalRecordsCounter.getValue()));
-    job2.setJarByClass(TFIDFJob.class);
-
-    job2.setMapperClass(TFIDFJob.IDFMapper.class);
-    job2.setMapOutputKeyClass(Text.class);
-    job2.setMapOutputValueClass(Text.class);
-    job2.setReducerClass(TFIDFJob.IDFReducer.class);
-    job2.setOutputKeyClass(Text.class);
-    job2.setOutputValueClass(Text.class);
-
-    FileInputFormat.addInputPath(job2, new Path(new Path(args[1]), "tf"));
-    FileOutputFormat.setOutputPath(job2, new Path(new Path(args[1]), "idf"));
-
-    job2.waitForCompletion(true);
+    // Job job2 = Job.getInstance(conf, "TF Job");
+    //
+    // Counter totalRecordsCounter =
+    // job1.getCounters().findCounter(TFIDFJob.Counters.TOTAL_RECORDS);
+    //
+    // job2.getConfiguration().set("total_records",
+    // Long.toString(totalRecordsCounter.getValue()));
+    // job2.setJarByClass(TFIDFJob.class);
+    //
+    // job2.setMapperClass(TFIDFJob.IDFMapper.class);
+    // job2.setMapOutputKeyClass(Text.class);
+    // job2.setMapOutputValueClass(Text.class);
+    // job2.setReducerClass(TFIDFJob.IDFReducer.class);
+    // job2.setOutputKeyClass(Text.class);
+    // job2.setOutputValueClass(Text.class);
+    //
+    // FileInputFormat.addInputPath(job2, new Path(new Path(args[1]), "tf"));
+    // FileOutputFormat.setOutputPath(job2, new Path(new Path(args[1]), "idf"));
+    //
+    // job2.waitForCompletion(true);
 
     //
     // // Set up the third map-reduce job to calculate TF-IDF

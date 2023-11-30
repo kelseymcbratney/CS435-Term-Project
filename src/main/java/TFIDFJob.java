@@ -132,7 +132,7 @@ public class TFIDFJob {
         JsonNode jsonNode = mapper.readTree(value.toString());
 
         // Extract values
-        String overall = jsonNode.get("overall").asText();
+        String rating = jsonNode.get("overall").asText();
         String reviewText = jsonNode.get("reviewText").asText().replaceAll("[^A-Za-z0-9 ]", "").toLowerCase();
 
         // Generate a unique ID using the counter
@@ -141,11 +141,11 @@ public class TFIDFJob {
         // Emit the values with unigrams, flipping word and docId
         StringTokenizer tokenizer = new StringTokenizer(reviewText);
         while (tokenizer.hasMoreTokens()) {
-          String token = tokenizer.nextToken();
-          if (!stopWords.contains(token)) {
-            docIdRatingAndTF.set(overall + ", " + "1" + ", " + token);
+          String unigram = tokenizer.nextToken();
+          if (!stopWords.contains(unigram)) {
+            RatingUnigramCount.set(rating + ", " + unigram + ", " + "1");
             word.set(Integer.toString(uniqueId));
-            context.write(word, docIdRatingAndTF);
+            context.write(word, RatingUnigramCount);
           }
         }
       } catch (Exception e) {
@@ -168,8 +168,8 @@ public class TFIDFJob {
 
       for (Text value : values) {
         String[] parts = value.toString().split(", ");
-        String unigram = parts[2]; // Assuming the unigram is at index 2
-        int count = Integer.parseInt(parts[1]); // Assuming the count is at index 1
+        String unigram = parts[1]; // Assuming the unigram is at index 2
+        int count = Integer.parseInt(parts[2]); // Assuming the count is at index 1
         rating = parts[0];
 
         // Update the count in the map
@@ -188,56 +188,63 @@ public class TFIDFJob {
         // Calculate TF (Term Frequency)
         double tf = (double) count / totalWords;
 
-        resultBuilder.append(unigram).append(":").append(tf).append(", ");
+        resultBuilder.append(rating)append(unigram).append("\t").append(tf);
       }
 
       // Set the result text
       result.set(resultBuilder.toString());
 
       // Emit the result for the key (overall rating)
-      context.write(new Text(rating), result);
+      context.write(key, result);
     }
   }
 
-  public static class IDFMapper extends Mapper<Object, Text, Text, Text> {
-    private final Text unigram = new Text();
-    private final Text docIdRatingAndTF = new Text();
-
-    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-      // Input format: key = line number, value = entire line
-      String[] parts = value.toString().split(", "); // Assuming tab-separated input
-      if (parts.length >= 2) {
-        String docId = parts[0];
-        String rating = parts[1].split(" ")[0]; // Extract the rating
-        String unigramValue = parts[1].substring(rating.length()).trim(); // Extract the rest of the line
-
-        unigram.set(unigramValue); // Set the unigram as the key
-        docIdRatingAndTF.set(docId + ":" + rating + ":" + unigramValue); // Set docId:rating:tf as the value
-        context.write(new Text(key), docIdRatingAndTF);
-      }
-    }
-  }
-
-  public static class IDFReducer extends Reducer<Text, Text, Text, DoubleWritable> {
-    private final DoubleWritable idfWritable = new DoubleWritable();
-
-    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      long totalDocs = context.getConfiguration().getLong("total_records", 0L);
-
-      int docCount = 0;
-      for (Text value : values) {
-        docCount++;
-      }
-
-      // Calculate IDF
-      double idf = Math.log((double) totalDocs / (double) (docCount + 1)); // Add 1 to avoid divide by zero
-
-      // Emit key in the format: overallIDF:unigram
-      String outputKey = idf + ":" + key.toString();
-      idfWritable.set(idf);
-      context.write(new Text(outputKey), idfWritable);
-    }
-  }
+  // public static class IDFMapper extends Mapper<Object, Text, Text, Text> {
+  // private final Text unigram = new Text();
+  // private final Text docIdRatingAndTF = new Text();
+  //
+  // public void map(Object key, Text value, Context context) throws IOException,
+  // InterruptedException {
+  // // Input format: key = line number, value = entire line
+  // String[] parts = value.toString().split(", "); // Assuming tab-separated
+  // input
+  // if (parts.length >= 2) {
+  // String docId = parts[0];
+  // String rating = parts[1].split(" ")[0]; // Extract the rating
+  // String unigramValue = parts[1].substring(rating.length()).trim(); // Extract
+  // the rest of the line
+  //
+  // unigram.set(unigramValue); // Set the unigram as the key
+  // docIdRatingAndTF.set(docId + ":" + rating + ":" + unigramValue); // Set
+  // docId:rating:tf as the value
+  // context.write(new Text(key), docIdRatingAndTF);
+  // }
+  // }
+  // }
+  //
+  // public static class IDFReducer extends Reducer<Text, Text, Text,
+  // DoubleWritable> {
+  // private final DoubleWritable idfWritable = new DoubleWritable();
+  //
+  // public void reduce(Text key, Iterable<Text> values, Context context) throws
+  // IOException, InterruptedException {
+  // long totalDocs = context.getConfiguration().getLong("total_records", 0L);
+  //
+  // int docCount = 0;
+  // for (Text value : values) {
+  // docCount++;
+  // }
+  //
+  // // Calculate IDF
+  // double idf = Math.log((double) totalDocs / (double) (docCount + 1)); // Add 1
+  // to avoid divide by zero
+  //
+  // // Emit key in the format: overallIDF:unigram
+  // String outputKey = idf + ":" + key.toString();
+  // idfWritable.set(idf);
+  // context.write(new Text(outputKey), idfWritable);
+  // }
+  // }
 
   // public static class CombineMapper extends Mapper<Text, Text, Text,
   // IntWritable> {
