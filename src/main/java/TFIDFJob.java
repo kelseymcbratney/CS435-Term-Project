@@ -201,16 +201,15 @@ public class TFIDFJob {
   }
 
   public static class TFIDFMapper extends Mapper<LongWritable, Text, Text, Text> {
-    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-      context.write(new Text(key), new Text(value));
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+      // Assuming key is the document ID, and value is the document content
+      context.write(new Text(key.toString()), new Text(value));
     }
   }
 
   public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       context.write(key, values.iterator().next());
-
     }
-
   }
 }
