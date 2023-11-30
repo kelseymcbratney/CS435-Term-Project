@@ -35,21 +35,21 @@ public class SentimentLauncher {
 
     job.waitForCompletion(true);
 
-    // // Set up the second map-reduce job to calculate inverse document frequency
-    // // (IDF)
-    // job = Job.getInstance(conf, "TF-IDF Job - IDF");
-    //
-    // job.setJarByClass(TFIDFJob.class);
-    // job.setMapperClass(TFIDFJob.TFIDFReducer.class);
-    // job.setMapOutputKeyClass(Text.class);
-    // job.setMapOutputValueClass(Text.class);
-    // job.setReducerClass(TFIDFJob.SumReducer.class);
-    // job.setOutputKeyClass(Text.class);
-    // job.setOutputValueClass(Text.class);
-    //
-    // FileInputFormat.addInputPath(job, new Path(args[1] + "/tf"));
-    // FileOutputFormat.setOutputPath(job, new Path(args[1] + "/idf"));
-    //
+    Job job2 = Job.getInstance(conf, "Combine Job");
+    job.setJarByClass(TFIDFJob.class);
+
+    // Set the mapper and reducer classes
+    job2.setMapperClass(TFIDFJob.CombineMapper.class);
+    job2.setReducerClass(TFIDFJob.CombineReducer.class);
+
+    // Set the output key and value classes
+    job2.setOutputKeyClass(Text.class);
+    job2.setOutputValueClass(IntWritable.class);
+
+    // Set the input and output paths
+    FileInputFormat.addInputPath(job, new Path(args[1] + "/tf"); // Replace with your actual input path
+    FileOutputFormat.setOutputPath(job, new Path(args[1] + "/combinedtf"))); // Replace with your desired output path
+
     // job.waitForCompletion(true);
     //
     // // Set up the third map-reduce job to calculate TF-IDF
