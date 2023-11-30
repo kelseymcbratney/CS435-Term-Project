@@ -237,8 +237,18 @@ public class TFIDFJob {
             double idf = Math.log10((double) totalReviewCount / (double) documentFrequency);
             double tfidf = tf * idf;
 
+            // Determine sentiment value based on rating
+            String sentimentValue;
+            if ("5.0".equals(rating) || "4.0".equals(rating)) {
+              sentimentValue = "Positive";
+            } else if ("3.0".equals(rating)) {
+              sentimentValue = "Neutral";
+            } else {
+              sentimentValue = "Negative";
+            }
+
             // Create a new Text object for each emission
-            Text resultText = new Text(rating + "\t" + unigram + "\t" + tfidf);
+            Text resultText = new Text(rating + "\t" + unigram + "\t" + tfidf + "\t" + sentimentValue);
             context.write(new Text(reviewID), resultText);
           } catch (NumberFormatException e) {
             // Handle the case where tfString is not a valid double
