@@ -84,9 +84,11 @@ public class TFIDFJob {
         }
 
         catch (Exception e) {
+          e.printStackTrace(); // Print the stack trace for detailed error information
           System.out.println("Unable to read the File");
           System.exit(1);
         }
+
       }
 
     }
