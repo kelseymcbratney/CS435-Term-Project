@@ -125,10 +125,10 @@ public class TFIDFJob {
         // Emit the values with unigrams, flipping word and docId
         StringTokenizer tokenizer = new StringTokenizer(reviewText);
         while (tokenizer.hasMoreTokens()) {
-          String word = tokenizer.nextToken();
-          if (!stopWords.contains(word)) {
+          String token = tokenizer.nextToken();
+          if (!stopWords.contains(token)) {
             docId.set(Integer.toString(uniqueId));
-            word.set(word);
+            word.set(token);
             rating.set(overall);
             context.write(docId, new Text(rating.toString() + ", " + "1" + ", " + word.toString()));
           }
