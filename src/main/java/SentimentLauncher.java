@@ -36,7 +36,8 @@ public class SentimentLauncher {
 
     job1.waitForCompletion(true);
 
-    Counter totalRecords = job1.getCounters().findCounter(Counters.TOTAL_RECORDS);
+    Counter totalRecords = TFIDFJob.getTotalRecordsCounter();
+    job2.getConfiguration().set("total_records", Long.toString(totalRecords.getValue()));
 
     Job job2 = Job.getInstance(conf, "TF Job");
 

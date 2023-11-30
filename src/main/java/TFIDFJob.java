@@ -20,8 +20,14 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.apache.hadoop.mapreduce.Counter;
 
 public class TFIDFJob {
+  private static Counter totalRecordsCounter;
+
   public static enum Counters {
     TOTAL_RECORDS
+  }
+
+  public static Counter getTotalRecordsCounter() {
+    return totalRecordsCounter;
   }
 
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
