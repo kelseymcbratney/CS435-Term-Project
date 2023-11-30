@@ -182,7 +182,7 @@ public class TFIDFJob {
       }
 
       // Emit the result for the key (overall rating)
-      context.write(new Text(rating));
+      context.write(key, new Text(rating));
     }
   }
 
