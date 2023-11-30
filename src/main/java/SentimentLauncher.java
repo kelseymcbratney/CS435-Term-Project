@@ -37,7 +37,7 @@ public class SentimentLauncher {
     job.waitForCompletion(true);
 
     Job job2 = Job.getInstance(conf, "Combine Job");
-    job.setJarByClass(TFIDFJob.class);
+    job2.setJarByClass(TFIDFJob.class); // Fix: Change job to job2
 
     // Set the mapper and reducer classes
     job2.setMapperClass(TFIDFJob.CombineMapper.class);
@@ -48,10 +48,11 @@ public class SentimentLauncher {
     job2.setOutputValueClass(IntWritable.class);
 
     // Set the input and output paths
-    FileInputFormat.addInputPath(job, new Path(args[1] + "/tf")); // Replace with your actual input path
-    FileOutputFormat.setOutputPath(job, new Path(args[1] + "/combinedtf")); // Replace with your desired output path
+    FileInputFormat.addInputPath(job2, new Path(args[1] + "/tf")); // Fix: Change job to job2
+    FileOutputFormat.setOutputPath(job2, new Path(args[1] + "/combinedtf")); // Fix: Change job to job2
 
     job2.waitForCompletion(true);
+
     //
     // // Set up the third map-reduce job to calculate TF-IDF
     // job = Job.getInstance(conf, "TF-IDF Job - TF-IDF");
