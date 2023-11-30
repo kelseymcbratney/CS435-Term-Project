@@ -22,6 +22,8 @@ import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
+import java.net.URI;
+import java.io.File;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
