@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.io.IOException;
 import java.util.StringTokenizer;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TFIDFJob {
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
