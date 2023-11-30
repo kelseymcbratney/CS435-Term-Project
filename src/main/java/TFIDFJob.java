@@ -175,4 +175,32 @@ public class TFIDFJob {
     }
   }
 
+  public static class CombineMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+    private final Text rating = new Text();
+    private final IntWritable count = new IntWritable();
+
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+      String[] parts = value.toString().split("\\s+", 2);
+      if (parts.length == 2) {
+        rating.set(parts[0]);
+        count.set(Integer.parseInt(parts[1]));
+        context.write(rating, count);
+      }
+    }
+  }
+
+public static class CombineReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+    private final IntWritable result = new IntWritable();
+
+    public void reduce(Text key, Iterable<IntWritable> values, Context context)
+            throws IOException, InterruptedException {
+        int sum = 0;
+        for (IntWritable value : values) {
+            sum += value.get();
+        }
+        result.set(sum);
+        context.write(key, result);
+    }
+}
+
 }
