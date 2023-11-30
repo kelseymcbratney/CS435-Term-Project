@@ -148,6 +148,7 @@ public class TFIDFJob {
   public static class SumReducer extends Reducer<Text, Text, Text, Text> {
 
     private final Text result = new Text();
+    private String rating;
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       // Initialize a map to store the count of each unigram
