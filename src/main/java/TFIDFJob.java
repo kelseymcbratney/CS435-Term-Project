@@ -173,33 +173,22 @@ public class TFIDFJob {
 
         // Check if the value has the expected format
         if (parts.length >= 3) {
-          String unigram = parts[1]; // Assuming the unigram is at index 2
-          int count = Integer.parseInt(parts[2]); // Assuming the count is at index 1
+          String unigram = parts[1]; // Assuming the unigram is at index 1
+          int count = Integer.parseInt(parts[2]); // Assuming the count is at index 2
+          String rating = parts[0]; // Assuming the rating is at index 0
 
           // Update the count in the map
           unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
 
           // Accumulate total words
           totalWords += count;
+          System.err.println(unigram + " " + count);
         } else {
           // Log a warning or handle the unexpected format
           System.err.println("Unexpected format: " + value.toString());
         }
       }
 
-      // Build the result string with unigram frequency values
-      StringBuilder resultBuilder = new StringBuilder();
-      for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
-        String unigram = entry.getKey();
-        int count = entry.getValue();
-
-        // Append the unigram and its frequency
-        resultBuilder.append(unigram).append("\t").append(count).append("\n");
-        // Set the result text
-        result.set(resultBuilder.toString().trim()); // Trim to remove trailing newline
-        // Emit the result for the key (DocID)
-        context.write(key, result);
-      }
     }
   }
 
