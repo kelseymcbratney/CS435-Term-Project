@@ -7,8 +7,6 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class SentimentLauncher {
 
@@ -23,9 +21,12 @@ public class SentimentLauncher {
     Job job = Job.getInstance(conf, "TF-IDF Job");
 
     job.setJarByClass(TFIDFJob.class);
+
+    // Set up the first map-reduce job to calculate term frequency (TF)
     job.setMapperClass(TFIDFJob.TFTokenizer.class);
+    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputValueClass(Text.class);
     job.setReducerClass(TFIDFJob.SumReducer.class);
-    job.setOutputFormatClass(TextOutputFormat.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
 
@@ -39,11 +40,10 @@ public class SentimentLauncher {
     job = Job.getInstance(conf, "TF-IDF Job - IDF");
 
     job.setJarByClass(TFIDFJob.class);
-    job.setMapperClass(TFIDFJob.TFIDFMapper.class);
-    job.setReducerClass(TFIDFJob.TFIDFReducer.class);
-    job.setReducerClass(TFIDFJob.SumReducer.class);
-    job.setInputFormatClass(TextInputFormat.class);
-    job.setOutputFormatClass(TextOutputFormat.class);
+    job.setMapperClass(TFIDFJob.TFIDFReducer.class);
+    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputValueClass(Text.class);
+    job.setReducerClass(TFIDFJob.TFIDFMapper.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
 
