@@ -83,15 +83,13 @@ public class TFIDFJob {
     }
   }
 
-  public static class TFIDFMapper extends Mapper<LongWritable, Text, LongWritable, Text> {
+  public static class TFIDFMapper extends Mapper<LongWritable, Text, Text, Text> {
     private final static Text result = new Text();
 
     public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-      System.out.println("Key type: " + key.getClass().getName());
-      System.out.println("Value type: " + value.getClass().getName());
-
       // Continue with your processing
-      context.write(key, value);
+
+      context.write(key, New Text(value));
     }
   }
 
