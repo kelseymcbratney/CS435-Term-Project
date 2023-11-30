@@ -10,7 +10,6 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 
 public class SentimentLauncher {
-
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
 
@@ -36,24 +35,25 @@ public class SentimentLauncher {
 
     job.waitForCompletion(true);
 
-    // Job job2 = Job.getInstance(conf, "TF Combine Job");
-    // job2.setJarByClass(TFIDFJob.class); // Fix: Change job to job2
-    //
-    // // Set the mapper and reducer classes
-    // job2.setMapperClass(TFIDFJob.CombineMapper.class);
-    // job2.setReducerClass(TFIDFJob.CombineReducer.class);
-    //
-    // // Set the output key and value classes
-    // job2.setOutputKeyClass(Text.class);
-    // job2.setOutputValueClass(IntWritable.class);
-    //
-    // // Set the input and output paths
-    // FileInputFormat.addInputPath(job2, new Path(args[1] + "/tf")); // Fix: Change
-    // job to job2
-    // FileOutputFormat.setOutputPath(job2, new Path(args[1] + "/combinedtf")); //
-    // Fix: Change job to job2
-    //
-    // job2.waitForCompletion(true);
+    Counter totalRecords = job1.getCounters().findCounter(Counters.TOTAL_RECORDS);
+
+    Job job2 = Job.getInstance(conf, "TF Job");
+
+    job2.setJarByClass(TFIDFJob.class);
+    job2.getConfiguration().set("total_records", Long.toString(counter.getValue()));
+
+    // Set up the first map-reduce job to calculate term frequency (TF)
+    job2.setMapperClass(TFIDFJob.TFTokenizer.class);
+    job2.setMapOutputKeyClass(Text.class);
+    job2.setMapOutputValueClass(Text.class);
+    job2.setReducerClass(TFIDFJob.SumReducer.class);
+    job2.setOutputKeyClass(Text.class);
+    job2.setOutputValueClass(Text.class);
+
+    FileInputFormat.addInputPath(job2, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job2, new Path(args[1] + "/tf"));
+
+    job2.waitForCompletion(true);
 
     //
     // // Set up the third map-reduce job to calculate TF-IDF

@@ -115,7 +115,12 @@ public class TFIDFJob {
       stopWords.add("without");
     }
 
+    public static enum Counters {
+      TOTAL_RECORDS
+    }
+
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+      context.getCounter(Counters.TOTAL_RECORDS).increment(1);
       try {
         // Parse JSON
         JsonNode jsonNode = mapper.readTree(value.toString());
@@ -186,6 +191,42 @@ public class TFIDFJob {
 
       // Emit the result for the key (overall rating)
       context.write(new Text(rating), result);
+    }
+  }
+
+  public static class IDFMapper extends Mapper<Text, Text, Text, Text> {
+    private final Text term = new Text();
+    private final Text docCountAndTF = new Text();
+
+    public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
+      // Input format: key = term, value = docId:tf
+      String[] parts = value.toString().split(", ");
+      String docId = key.toString();
+      String termFreq = parts[0];
+
+      term.set(parts[0]); // Set the term as the key
+      docCountAndTF.set(docId + ":" + termFreq); // Set docId:tf as the value
+      context.write(term, docCountAndTF);
+    }
+  }
+
+  public static class IDFReducer extends Reducer<Text, Text, Text, DoubleWritable> {
+    private final DoubleWritable idfWritable = new DoubleWritable();
+
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+      int totalDocs = context.getConfiguration().getInt("totalDocs", 1); // Get the total number of documents from
+                                                                         // configuration
+
+      int docCount = 0;
+      for (Text value : values) {
+        docCount++;
+      }
+
+      // Calculate IDF
+      double idf = Math.log((double) totalDocs / (double) (docCount + 1)); // Add 1 to avoid divide by zero
+
+      idfWritable.set(idf);
+      context.write(key, idfWritable);
     }
   }
 
