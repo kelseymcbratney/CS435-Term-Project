@@ -207,6 +207,8 @@ public class TFIDFJob {
   }
 
   public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
+    private final Text result = new Text();
+
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       long totalReviewCount = context.getConfiguration().getLong("total_records", 0L);
       int documentFrequency = 0;
@@ -221,13 +223,15 @@ public class TFIDFJob {
 
       // Iterate over the values again to calculate TF-IDF and emit the result
       for (Text value : values) {
-        String[] parts = value.toString().split("\t");
-        String term = parts[2];
-        double tf = Double.parseDouble(parts[1]);
+        if (parts.length >= 3) {
+          String unigram = parts[1]; // Assuming the unigram is at index 1
+          rating = parts[0]; // Assuming the rating is at index 0
+          double tf = Double.parseDouble(parts[2]);
+        }
         double tfidf = tf * idf;
 
-        // Emit the documentID, term, and TF-IDF as the key, value pair
-        context.write(new Text(key + "\t" + term), new Text(String.valueOf(tfidf)));
+        result.set(rating + "\t" + unigram + "\t" + tfidf);
+        context.write(key, result);
       }
     }
   }
