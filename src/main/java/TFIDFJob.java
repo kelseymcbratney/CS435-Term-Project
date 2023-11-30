@@ -143,10 +143,12 @@ public class TFIDFJob {
         while (tokenizer.hasMoreTokens()) {
           String unigram = tokenizer.nextToken();
           if (!stopWords.contains(unigram)) {
+            // Create a new instance of Text for each emission
+            Text RatingUnigramCount = new Text();
+
             // Emit the unique ID (docID), rating, and unigram
-            docID.set(Integer.toString(uniqueId));
             RatingUnigramCount.set(rating + "\t" + unigram + "\t" + "1");
-            context.write(docID, RatingUnigramCount);
+            context.write(new Text(Integer.toString(uniqueId)), RatingUnigramCount);
           }
         }
       } catch (Exception e) {
