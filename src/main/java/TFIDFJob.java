@@ -215,7 +215,7 @@ public class TFIDFJob {
       List<String> tfList = new ArrayList<String>();
       int documentFrequency = 0;
 
-      System.err.println(key.toString());
+      System.err.println("Key" + key.toString());
 
       // Iterate over the values to calculate document frequency
       for (Text value : values) {
