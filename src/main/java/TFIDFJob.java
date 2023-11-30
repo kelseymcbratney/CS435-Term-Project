@@ -220,8 +220,8 @@ public class TFIDFJob {
 
       for (Text value : values) {
         String[] parts = value.toString().split("\t");
+        System.err.println("Parts: " + parts.toString());
       }
-      System.err.println("Parts: " + parts.toString());
 
       // // Iterate over the values to calculate document frequency
       // for (Text value : values) {
