@@ -46,114 +46,19 @@ public class TFIDFJob {
     private final ObjectMapper mapper = new ObjectMapper();
     private static Set<String> stopWords;
 
-    static {
-      // Initialize stop words set
-      stopWords = new HashSet<>();
-      stopWords.add("each");
-      stopWords.add("every");
-      stopWords.add("her");
-      stopWords.add("his");
-      stopWords.add("its");
-      stopWords.add("my");
-      stopWords.add("no");
-      stopWords.add("our");
-      stopWords.add("some");
-      stopWords.add("that");
-      stopWords.add("the");
-      stopWords.add("their");
-      stopWords.add("this");
-      // Add coordinating conjunctions
-      stopWords.add("and");
-      stopWords.add("but");
-      stopWords.add("or");
-      stopWords.add("yet");
-      stopWords.add("for");
-      stopWords.add("nor");
-      stopWords.add("so");
-      // Add prepositions
-      stopWords.add("a");
-      stopWords.add("as");
-      stopWords.add("aboard");
-      stopWords.add("about");
-      stopWords.add("above");
-      stopWords.add("across");
-      stopWords.add("after");
-      stopWords.add("against");
-      stopWords.add("along");
-      stopWords.add("around");
-      stopWords.add("at");
-      stopWords.add("before");
-      stopWords.add("behind");
-      stopWords.add("below");
-      stopWords.add("beneath");
-      stopWords.add("beside");
-      stopWords.add("between");
-      stopWords.add("beyond");
-      stopWords.add("but");
-      stopWords.add("by");
-      stopWords.add("down");
-      stopWords.add("during");
-      stopWords.add("except");
-      stopWords.add("following");
-      stopWords.add("for");
-      stopWords.add("from");
-      stopWords.add("in");
-      stopWords.add("inside");
-      stopWords.add("into");
-      stopWords.add("like");
-      stopWords.add("minus");
-      stopWords.add("minus");
-      stopWords.add("near");
-      stopWords.add("next");
-      stopWords.add("of");
-      stopWords.add("off");
-      stopWords.add("on");
-      stopWords.add("onto");
-      stopWords.add("onto");
-      stopWords.add("opposite");
-      stopWords.add("out");
-      stopWords.add("outside");
-      stopWords.add("over");
-      stopWords.add("past");
-      stopWords.add("plus");
-      stopWords.add("round");
-      stopWords.add("since");
-      stopWords.add("since");
-      stopWords.add("than");
-      stopWords.add("through");
-      stopWords.add("to");
-      stopWords.add("toward");
-      stopWords.add("under");
-      stopWords.add("underneath");
-      stopWords.add("unlike");
-      stopWords.add("until");
-      stopWords.add("up");
-      stopWords.add("upon");
-      stopWords.add("very");
-      stopWords.add("with");
-      stopWords.add("without");
-    }
-
     public void setup(Context context) throws IOException, InterruptedException {
       // Read stopwords from the distributed cache
       URI[] cacheFiles = DistributedCache.getCacheFiles(context.getConfiguration());
       if (cacheFiles != null && cacheFiles.length > 0) {
-        for (URI cacheFile : cacheFiles) {
-          // Read stopwords from the cache file and populate the stopWords set
-          // You may need to modify this part based on the actual structure of your
-          // stopwords file
-          // For example, you might use BufferedReader to read lines from the file
-          // and add each line to the stopWords set
-          // ...
 
-          BufferedReader reader = new BufferedReader(new FileReader("stopwords.txt"));
-          String line;
-          while ((line = reader.readLine()) != null) {
-            stopWords.add(line.trim());
-          }
-
-          reader.close();
+        BufferedReader reader = new BufferedReader(new FileReader("stopwords.txt"));
+        String line;
+        while ((line = reader.readLine()) != null) {
+          stopWords.add(line.trim());
         }
+
+        reader.close();
+
       }
     }
 
