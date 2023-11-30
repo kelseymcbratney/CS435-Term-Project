@@ -209,7 +209,7 @@ public class TFIDFJob {
   public static class TFIDFReducer extends Reducer<Text, Text, Text, Text> {
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       long totalReviewCount = context.getConfiguration().getLong("total_records", 0L);
-      Systtem.err.println("Total review count: " + totalReviewCount);
+      System.err.println("Total review count: " + totalReviewCount);
       context.write(key, values.iterator().next());
     }
   }
