@@ -236,8 +236,10 @@ public class TFIDFJob {
             double tf = Double.parseDouble(tfString);
             double idf = Math.log10((double) totalReviewCount / (double) documentFrequency);
             double tfidf = tf * idf;
-            result.set(rating + "\t" + unigram + "\t" + tfidf);
-            context.write(key, result);
+
+            // Create a new Text object for each emission
+            Text resultText = new Text(rating + "\t" + unigram + "\t" + tfidf);
+            context.write(key, resultText);
           } catch (NumberFormatException e) {
             // Handle the case where tfString is not a valid double
             System.err.println("Error parsing TF value: " + tfString);
