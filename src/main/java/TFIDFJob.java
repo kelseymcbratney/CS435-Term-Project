@@ -158,7 +158,7 @@ public class TFIDFJob {
     }
   }
 
-  public static class TFReducer extends Reducer<Text, Text, Text, Text> {
+  public static class UFReducer extends Reducer<Text, Text, Text, Text> {
     private final Text result = new Text();
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
@@ -167,7 +167,6 @@ public class TFIDFJob {
 
       // Iterate through the values and count the occurrences of each unigram
       int totalWords = 0; // Total words in the document for calculating TF
-      String rating = null; // Overall rating
 
       for (Text value : values) {
         String[] parts = value.toString().split("\t");
@@ -186,34 +185,22 @@ public class TFIDFJob {
           // Log a warning or handle the unexpected format
           System.err.println("Unexpected format: " + value.toString());
         }
-
-        // Extract the overall rating (rank) from the key
-        if (rating == null) {
-          String[] keyParts = key.toString().split("\t");
-          if (keyParts.length > 0) {
-            rating = keyParts[0];
-          }
-        }
       }
 
-      // Build the result string with rank, TF values
+      // Build the result string with unigram frequency values
       StringBuilder resultBuilder = new StringBuilder();
-      resultBuilder.append(rating).append("\t");
-
       for (Map.Entry<String, Integer> entry : unigramCountMap.entrySet()) {
         String unigram = entry.getKey();
         int count = entry.getValue();
 
-        // Calculate TF (Term Frequency)
-        double tf = (double) count / totalWords;
-
-        resultBuilder.append(unigram).append("\t").append(tf).append("\n");
+        // Append the unigram and its frequency
+        resultBuilder.append(unigram).append("\t").append(count).append("\n");
       }
 
       // Set the result text
       result.set(resultBuilder.toString().trim()); // Trim to remove trailing newline
 
-      // Emit the result for the key (uniqueID)
+      // Emit the result for the key (DocID)
       context.write(key, result);
     }
   }
