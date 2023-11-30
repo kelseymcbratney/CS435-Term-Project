@@ -138,6 +138,7 @@ public class TFIDFJob {
         // Generate a unique ID using the counter
         int uniqueId = counter++;
 
+        docID.set(Integer.toString(uniqueId));
         // Emit each unigram and its TF value separately
         StringTokenizer tokenizer = new StringTokenizer(reviewText);
         while (tokenizer.hasMoreTokens()) {
@@ -148,7 +149,7 @@ public class TFIDFJob {
 
             // Emit the unique ID (docID), rating, and unigram
             RatingUnigramCount.set(rating + "\t" + unigram + "\t" + "1");
-            context.write(new Text(Integer.toString(uniqueId)), RatingUnigramCount);
+            context.write(docID, RatingUnigramCount);
           }
         }
       } catch (Exception e) {
