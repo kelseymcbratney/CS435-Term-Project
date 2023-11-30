@@ -189,6 +189,15 @@ public class TFIDFJob {
         }
       }
 
+      for (String unigram : unigramCountMap.keySet()) {
+        // Calculate TF
+        double tf = (double) unigramCountMap.get(unigram) / (double) totalWords;
+        // Emit key in the format: docID:rating:unigram
+        String outputKey = key.toString() + ":" + unigram;
+        result.set(tf + "");
+        context.write(new Text(outputKey), result);
+      }
+
     }
   }
 
