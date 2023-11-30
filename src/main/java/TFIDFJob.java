@@ -147,12 +147,8 @@ public class TFIDFJob {
   }
 
   public static class SumReducer extends Reducer<Text, Text, Text, Text> {
-    // Output key: documentId, value: "term:TF:totalTerms"
-    // Example: "doc1", "word1:0.05:100"
-    // ...
 
     private final Text result = new Text();
-    private String rating;
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       // Initialize a map to store the count of each unigram
@@ -182,8 +178,8 @@ public class TFIDFJob {
       // Set the result text
       result.set(resultBuilder.toString());
 
-      // Emit the result for the key (docId)
-      context.write(new Text(rating), result);
+      // Emit the result for the key (rating)
+      context.write(key, result);
     }
   }
 
