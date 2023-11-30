@@ -160,6 +160,7 @@ public class TFIDFJob {
 
   public static class UFReducer extends Reducer<Text, Text, Text, Text> {
     private final Text result = new Text();
+    private String rating;
 
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       // Initialize a map to store the count of each unigram
@@ -175,7 +176,7 @@ public class TFIDFJob {
         if (parts.length >= 3) {
           String unigram = parts[1]; // Assuming the unigram is at index 1
           int count = Integer.parseInt(parts[2]); // Assuming the count is at index 2
-          String rating = parts[0]; // Assuming the rating is at index 0
+          rating = parts[0]; // Assuming the rating is at index 0
 
           // Update the count in the map
           unigramCountMap.put(unigram, unigramCountMap.getOrDefault(unigram, 0) + count);
