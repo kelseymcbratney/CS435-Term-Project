@@ -161,7 +161,7 @@ public class TFIDFJob {
   public static class SumReducer extends Reducer<Text, Text, Text, Text> {
     public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
       // Do nothing
-      context.write(key, new Text(values.toString()));
+      context.write(key, values.iterator().next());
     }
   }
 
