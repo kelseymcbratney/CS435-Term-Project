@@ -172,7 +172,7 @@ public class TFIDFJob {
       int totalWords = 0; // Total words in the document for calculating TF
 
       for (Text value : values) {
-        String[] parts = value.toString().split(", ");
+        String[] parts = value.toString().split("\t");
 
         // Check if the value has the expected format
         if (parts.length >= 3) {
