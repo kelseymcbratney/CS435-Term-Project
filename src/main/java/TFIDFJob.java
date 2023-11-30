@@ -228,9 +228,9 @@ public class TFIDFJob {
         String[] parts = value.toString().split("\t");
         System.out.println(Arrays.toString(parts));
         if (parts.length >= 3) {
-          String unigram = parts[1]; // Assuming the unigram is at index 1
-          rating = parts[0]; // Assuming the rating is at index 0
-          String tfString = parts[2]; // Assuming the TF value is at index 2
+          String unigram = parts[2]; // Assuming the unigram is at index 1
+          rating = parts[1]; // Assuming the rating is at index 0
+          String tfString = parts[3]; // Assuming the TF value is at index 2
 
           // Check if tfString is a valid representation of a double
           try {
