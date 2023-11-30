@@ -146,7 +146,7 @@ public class TFIDFJob {
           // and add each line to the stopWords set
           // ...
 
-          BufferedReader reader = new BufferedReader(new FileReader(cacheFile.getPath()));
+          BufferedReader reader = new BufferedReader(new FileReader("stopwords.txt"));
           String line;
           while ((line = reader.readLine()) != null) {
             stopWords.add(line.trim());
