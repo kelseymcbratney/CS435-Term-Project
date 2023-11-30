@@ -215,8 +215,8 @@ public class TFIDFJob {
       List<String> tfList = new ArrayList<String>();
       int documentFrequency = 0;
 
-      System.err.println("Key" + key.toString());
-      System.err.println("Values" + values.toString());
+      System.err.println("Key: " + key.toString());
+      System.err.println("Values: " + values.iterator().next().toString());
 
       // Iterate over the values to calculate document frequency
       for (Text value : values) {
@@ -224,7 +224,7 @@ public class TFIDFJob {
         documentFrequency++;
       }
 
-      // Iterate over the values again to cal culate TF-IDF and emit the result
+      // Iterate over the values again to cal culate TF-IDF and emit the result gg
       // for (String tfValue : tfList) {
       // String[] parts = tfValue.toString().split("\t");
       // System.err.println("Parts: " + parts.toString());
