@@ -45,14 +45,13 @@ public class TFIDFJob {
   public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
     private final Text RatingUnigramCount = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
-    private static Set<String> stopWords;
-    private Path stopWordsFiles;
+    private static Set<String> stopWords = new HashSet<>();
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
       // Retrieve the stop words file from the distributed cache
-      URI[] stopWordsFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
+      Path[] stopWordsFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
       if (stopWordsFiles != null && stopWordsFiles.length > 0) {
-        try (BufferedReader br = new BufferedReader(new FileReader(new File(stopWordsFiles[0])))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(stopWordsFiles[0].toString())))) {
           String line;
           while ((line = br.readLine()) != null) {
             stopWords.add(line.trim().toLowerCase());
@@ -95,9 +94,7 @@ public class TFIDFJob {
         // Handle parsing errors
         System.err.println("Error parsing JSON: " + e.getMessage());
       }
-
     }
-
   }
 
   public static class TFReducer extends Reducer<Text, Text, Text, Text> {
