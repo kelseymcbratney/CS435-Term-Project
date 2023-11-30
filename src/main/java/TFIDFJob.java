@@ -19,6 +19,15 @@ import java.util.Comparator;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.hadoop.mapreduce.Counter;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.fs.Path;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TFIDFJob {
   private static Counter totalRecordsCounter;
@@ -31,100 +40,36 @@ public class TFIDFJob {
     return totalRecordsCounter;
   }
 
-  public static class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
+  public class TFTokenizer extends Mapper<LongWritable, Text, Text, Text> {
     private final Text RatingUnigramCount = new Text();
     private final ObjectMapper mapper = new ObjectMapper();
-    private static Set<String> stopWords;
+    private final Set<String> stopWords = new HashSet<>();
 
-    static {
-      // Initialize stop words set
-      stopWords = new HashSet<>();
-      stopWords.add("each");
-      stopWords.add("every");
-      stopWords.add("her");
-      stopWords.add("his");
-      stopWords.add("its");
-      stopWords.add("my");
-      stopWords.add("no");
-      stopWords.add("our");
-      stopWords.add("some");
-      stopWords.add("that");
-      stopWords.add("the");
-      stopWords.add("their");
-      stopWords.add("this");
-      // Add coordinating conjunctions
-      stopWords.add("and");
-      stopWords.add("but");
-      stopWords.add("or");
-      stopWords.add("yet");
-      stopWords.add("for");
-      stopWords.add("nor");
-      stopWords.add("so");
-      // Add prepositions
-      stopWords.add("a");
-      stopWords.add("as");
-      stopWords.add("aboard");
-      stopWords.add("about");
-      stopWords.add("above");
-      stopWords.add("across");
-      stopWords.add("after");
-      stopWords.add("against");
-      stopWords.add("along");
-      stopWords.add("around");
-      stopWords.add("at");
-      stopWords.add("before");
-      stopWords.add("behind");
-      stopWords.add("below");
-      stopWords.add("beneath");
-      stopWords.add("beside");
-      stopWords.add("between");
-      stopWords.add("beyond");
-      stopWords.add("but");
-      stopWords.add("by");
-      stopWords.add("down");
-      stopWords.add("during");
-      stopWords.add("except");
-      stopWords.add("following");
-      stopWords.add("for");
-      stopWords.add("from");
-      stopWords.add("in");
-      stopWords.add("inside");
-      stopWords.add("into");
-      stopWords.add("like");
-      stopWords.add("minus");
-      stopWords.add("minus");
-      stopWords.add("near");
-      stopWords.add("next");
-      stopWords.add("of");
-      stopWords.add("off");
-      stopWords.add("on");
-      stopWords.add("onto");
-      stopWords.add("onto");
-      stopWords.add("opposite");
-      stopWords.add("out");
-      stopWords.add("outside");
-      stopWords.add("over");
-      stopWords.add("past");
-      stopWords.add("plus");
-      stopWords.add("round");
-      stopWords.add("since");
-      stopWords.add("since");
-      stopWords.add("than");
-      stopWords.add("through");
-      stopWords.add("to");
-      stopWords.add("toward");
-      stopWords.add("under");
-      stopWords.add("underneath");
-      stopWords.add("unlike");
-      stopWords.add("until");
-      stopWords.add("up");
-      stopWords.add("upon");
-      stopWords.add("very");
-      stopWords.add("with");
-      stopWords.add("without");
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException {
+      try {
+        // Retrieve the stop words file from the distributed cache
+        Path[] stopWordsFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
+        if (stopWordsFiles != null && stopWordsFiles.length > 0) {
+          loadStopWords(stopWordsFiles[0]);
+        }
+      } catch (IOException e) {
+        System.err.println("Error loading stop words file: " + e.getMessage());
+      }
+    }
+
+    private void loadStopWords(Path stopWordsFile) throws IOException {
+      try (BufferedReader br = new BufferedReader(new FileReader(stopWordsFile.toString()))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+          stopWords.add(line.trim().toLowerCase());
+        }
+      }
     }
 
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+      // Your existing map function remains unchanged
+
       context.getCounter(Counters.TOTAL_RECORDS).increment(1);
       try {
         // Parse JSON
