@@ -51,6 +51,16 @@ public class RandomForestExample {
             // Step 6: Evaluate the model
             evaluateModel(classifier, filteredTestingData);
 
+            // Step 7 Testing with new data
+            System.out.println("Testing new File Prediction")
+            String newCsvFilePath = "your_data.csv";
+            Instances[] newSplitData = splitData(instances, 0);
+            Instances newTestingData = newSplitData[0];
+            Instances newFilteredTestingData = Filter.useFilter(newTestingData, filter);
+            evaluateModel(classifier,newFilteredTrainingData);
+            
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
