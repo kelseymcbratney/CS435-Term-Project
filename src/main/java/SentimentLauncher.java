@@ -1,23 +1,25 @@
 package SentimentLauncher;
 
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
+
 import java.net.URI;
 
-public class SentimentLauncher {
-  public static void main(String[] args) throws Exception {
-    Configuration conf = new Configuration();
-
+public class SentimentLauncher extends Configured implements Tool {
+  public int run(String[] args) throws Exception {
     if (args.length != 3) {
       System.err.println("Usage: SentimentLauncher <input path> <output path> <stopwords file>");
-      System.exit(-1);
+      return -1;
     }
+
+    Configuration conf = getConf();
 
     Job job1 = Job.getInstance(conf, "TF Job");
 
@@ -54,6 +56,11 @@ public class SentimentLauncher {
     FileInputFormat.addInputPath(job2, new Path(args[1] + "/tf"));
     FileOutputFormat.setOutputPath(job2, new Path(args[1] + "/tfidf"));
 
-    job2.waitForCompletion(true);
+    return job2.waitForCompletion(true) ? 0 : 1;
+  }
+
+  public static void main(String[] args) throws Exception {
+    int exitCode = ToolRunner.run(new SentimentLauncher(), args);
+    System.exit(exitCode);
   }
 }
