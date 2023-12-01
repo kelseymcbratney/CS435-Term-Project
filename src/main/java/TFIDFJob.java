@@ -106,7 +106,6 @@ public class TFIDFJob {
         }
       } catch (Exception e) {
         // Handle parsing errors
-        System.err.println("Error parsing JSON: " + e.getMessage());
       }
     }
 
