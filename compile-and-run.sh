@@ -2,14 +2,14 @@
 
 git pull
 
-rm build/SentimentLauncher/*.class
-rm build/SentimentLauncher.jar
+rm SentimentLauncher/*.class
+rm SentimentLauncher.jar
 
-hadoop com.sun.tools.javac.Main /src/main.java/SentimentLauncher.java /src/main/java/TFIDFJob.java
+hadoop com.sun.tools.javac.Main src/main/java/SentimentLauncher.java src/main/java/TFIDFJob.java
 
-mv /src/main.java/*.class build/SentimentLauncher/
+mv src/main/java/*.class SentimentLauncher/
 
-jar cfm SentimentLauncher.jar Manifest.txt build/SentimentLauncher/
+jar cfm SentimentLauncher.jar Manifest.txt SentimentLauncher/
 
 hadoop fs -rm -r /SentimentAnalysis/tf
 hadoop fs -rm -r /SentimentAnalysis/tfidf
