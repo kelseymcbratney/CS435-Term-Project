@@ -86,6 +86,14 @@ public class RandomForestJob {
         .setMetricName("accuracy");
     double accuracy = evaluator.evaluate(predictions);
 
+    //Evaluating the model error on training data
+    double trainingAccuracy = evaluator.evaluate(model.transform(trainingData));
+    double trainingError = 1.0 - trainingAccuracy;
+
+      // Evaluating the model error on test data
+    double testingAccuracy = evaluator.evaluate(model.transform(testData));
+    double testingError = 1.0 - testingAccuracy;
+
     // Calculate precision, recall, and F1-score
     MulticlassClassificationEvaluator prfEvaluator = new MulticlassClassificationEvaluator()
         .setLabelCol("indexedLabel")
@@ -98,6 +106,8 @@ public class RandomForestJob {
     System.out.println("Precision = " + precision);
     System.out.println("Recall = " + recall);
     System.out.println("F1 Score = " + f1);
+    System.out.println("Training Error Percentage = " + (trainingError * 100) + "%");
+    System.out.println("Testing Error Percentage = " + (testingError * 100) + "%");
     System.out.println("Test Accuracy = " + accuracy);
 
     // Add precision, recall, and f1-score columns to the DataFrame
