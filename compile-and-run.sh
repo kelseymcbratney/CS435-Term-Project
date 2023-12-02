@@ -16,4 +16,4 @@ jar cfm SentimentLauncher.jar Manifest.txt SentimentLauncher/
 hadoop fs -rm -r /SentimentAnalysis/tf
 hadoop fs -rm -r /SentimentAnalysis/tfidf
 
-hadoop jar SentimentLauncher.jar /SentimentAnalysis/home-and-kitchen-sample.json /SentimentAnalysis/ /SentimentAnalysis/stopwords.txt
+hadoop jar SentimentLauncher.jar /SentimentAnalysis/home-and-kitchen.json /SentimentAnalysis/ /SentimentAnalysis/stopwords.txt
