@@ -84,9 +84,6 @@ public class RandomForestJob {
         .setMetricName("accuracy");
     double accuracy = evaluator.evaluate(predictions);
     System.out.println("Test Accuracy = " + accuracy);
-    System.out.println("Test Accuracy = " + accuracy);
-    System.out.println("Test Accuracy = " + accuracy);
-    System.out.println("Test Accuracy = " + accuracy);
 
     // Stop the Spark session
     spark.stop();
