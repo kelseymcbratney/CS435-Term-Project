@@ -1,5 +1,5 @@
 # CS435-Term-Project
-## Sentiment Analysis of Amazon Review Dataset
+## Sentiment Analysis of Amazon Review using Hadoop and Spark
 
 ## Run Sentiment Analysis
 
@@ -16,4 +16,6 @@ hadoop fs -cat /SentimentAnalysis/tf/*
 hadoop fs -cat /SentimentAnalysis/tfidf/*
 
 ## Run Spark Machine Learning on Dataset
-./run-spark.sh 
+./compile-and-run-spark.sh
+
+The result accuracy will be printed on the screen.
