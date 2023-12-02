@@ -20,7 +20,7 @@ public class RandomForestJob {
     SparkSession spark = SparkSession.builder()
         .appName("RandomForestExample")
         .config("spark.master", "local")
-        .config("spark.executor.memory", "8g")
+        .config("spark.executor.memory", "32g")
         .getOrCreate();
 
     // Define the schema for the input data
