@@ -4,10 +4,18 @@
 ./compile.sh
 
 ## Run Sentiment Analysis
-hadoop jar SentimentLauncher.jar /SentimentAnalysis/home-and-kitchen-sample.json /SentimentAnalysis/ /SentimentAnalysis/stopwords.txt
+
+### Full Dataset
+./compile-and-run.sh
+
+### Small Dataset
+./compile-and-run-sample.sh
 
 ## Gather TF
 hadoop fs -cat /SentimentAnalysis/tf/*
 
 ## Gather TFIDF
 hadoop fs -cat /SentimentAnalysis/tfidf/*
+
+## Run Spark Machine Learning on Dataset
+./run-spark.sh
