@@ -68,12 +68,12 @@ public class RandomForestJob {
             Dataset<Row> trainingData = splits[0];
             Dataset<Row> testData = splits[1];
 
-            // Train a RandomForest model
+            // Train a RandomForest model 
             RandomForestClassifier rf = new RandomForestClassifier()
                 .setLabelCol("indexedLabel")
                 .setFeaturesCol("features")
-                .setMaxDepth(10)
-                .setNumTrees(100)
+                .setMaxDepth(6)
+                .setNumTrees(10)
                 .setMaxBins(1300000); // Set maxBins to a value greater than or equal to the number of unique values
 
             RandomForestClassificationModel model = rf.fit(trainingData);
