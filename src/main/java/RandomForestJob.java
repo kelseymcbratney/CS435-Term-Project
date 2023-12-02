@@ -14,14 +14,14 @@ import org.apache.spark.sql.SaveMode;
 import static org.apache.spark.sql.functions.lit;
 
 public class RandomForestJob {
-    public static void main(String[] args) {
+  public static void main(String[] args) {
         // Create a Spark session
         // Adding Try and catch to handle the erro 
         try{    
             SparkSession spark = SparkSession.builder()
                 .appName("RandomForestExample")
                 .config("spark.master", "local")
-                .config("spark.executor.memory", "8g")
+                .config("spark.executor.memory", "32g")
                 .getOrCreate();
 
             // Define the schema for the input data
