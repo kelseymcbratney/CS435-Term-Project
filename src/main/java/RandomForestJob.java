@@ -10,6 +10,7 @@ import org.apache.spark.sql.types.StructType;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.SaveMode;
 
 public class RandomForestJob {
 
@@ -84,6 +85,12 @@ public class RandomForestJob {
         .setMetricName("accuracy");
     double accuracy = evaluator.evaluate(predictions);
     System.out.println("Test Accuracy = " + accuracy);
+
+    // Save the predictions to a file in CSV format
+    predictions.select("ReviewId", "indexedLabel", "prediction")
+        .write()
+        .mode(SaveMode.Overwrite) // You can change this mode based on your needs
+        .csv("/SentimentAnalysis/predictions");
 
     // Stop the Spark session
     spark.stop();
