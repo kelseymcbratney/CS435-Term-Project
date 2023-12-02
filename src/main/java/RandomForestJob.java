@@ -25,6 +25,7 @@ public class RandomForestJob {
           .config("spark.driver.memory", "4g")
           .config("spark.memory.offHeap.enabled", true)
           .config("spark.executor.extraJavaOptions", "-XX:+UseG1GC")
+          .config("spark.memory.offHeap.size", "8g")
           .getOrCreate();
 
       // Define the schema for the input data
