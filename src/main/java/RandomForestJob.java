@@ -68,7 +68,7 @@ public class RandomForestJob {
         .setLabelCol("indexedLabel")
         .setFeaturesCol("features")
         .setNumTrees(10)
-        .setMaxBins(20000); // Set maxBins to a value greater than or equal to the number of unique values
+        .setMaxBins(1300000); // Set maxBins to a value greater than or equal to the number of unique values
 
     RandomForestClassificationModel model = rf.fit(trainingData);
 
