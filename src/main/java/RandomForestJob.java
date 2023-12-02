@@ -72,8 +72,8 @@ public class RandomForestJob {
       RandomForestClassifier rf = new RandomForestClassifier()
           .setLabelCol("indexedLabel")
           .setFeaturesCol("features")
-          .setMaxDepth(8)
-          .setNumTrees(200)
+          .setMaxDepth(12)
+          .setNumTrees(100)
           .setMaxBins(1300000); // Set maxBins to a value greater than or equal to the number of unique values
 
       RandomForestClassificationModel model = rf.fit(trainingData);
