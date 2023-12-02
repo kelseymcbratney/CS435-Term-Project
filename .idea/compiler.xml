@@ -6,11 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="PageRank" />
+        <module name="RandomForestJob" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="cs435-Term-Project" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
 </project>
