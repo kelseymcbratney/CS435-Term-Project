@@ -11,6 +11,7 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.SaveMode;
+import org.apache.spark.sql.functions.lit;
 
 public class RandomForestJob {
 
@@ -84,12 +85,30 @@ public class RandomForestJob {
         .setPredictionCol("prediction")
         .setMetricName("accuracy");
     double accuracy = evaluator.evaluate(predictions);
+
+    // Calculate precision, recall, and F1-score
+    MulticlassClassificationEvaluator prfEvaluator = new MulticlassClassificationEvaluator()
+        .setLabelCol("indexedLabel")
+        .setPredictionCol("prediction");
+
+    double precision = prfEvaluator.setMetricName("weightedPrecision").evaluate(predictions);
+    double recall = prfEvaluator.setMetricName("weightedRecall").evaluate(predictions);
+    double f1 = prfEvaluator.setMetricName("f1").evaluate(predictions);
+
+    System.out.println("Precision = " + precision);
+    System.out.println("Recall = " + recall);
+    System.out.println("F1 Score = " + f1);
     System.out.println("Test Accuracy = " + accuracy);
 
-    // Save the predictions to a file in CSV format
-    predictions.select("ReviewId", "indexedLabel", "prediction")
+    // Add precision, recall, and f1-score columns to the DataFrame
+    predictions = predictions.withColumn("precision", lit(precision))
+        .withColumn("recall", lit(recall))
+        .withColumn("f1", lit(f1));
+
+    // Save the predictions with additional metrics to a file in CSV format
+    predictions.select("ReviewId", "indexedLabel", "prediction", "precision", "recall", "f1")
         .write()
-        .mode(SaveMode.Overwrite) // You can change this mode based on your needs
+        .mode(SaveMode.Overwrite)
         .csv("/SentimentAnalysis/predictions");
 
     // Stop the Spark session
