@@ -2,6 +2,8 @@
 
 git pull
 
+mkdir SentimentLauncher
+
 rm SentimentLauncher/*.class
 rm SentimentLauncher.jar
 
