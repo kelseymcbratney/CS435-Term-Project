@@ -22,6 +22,7 @@ public class RandomForestJob {
                 .appName("RandomForestExample")
                 .config("spark.master", "local")
                 .config("spark.executor.memory", "32g")
+                .config("spark.driver.memory", "4g")
                 .getOrCreate();
 
             // Define the schema for the input data
@@ -131,5 +132,5 @@ public class RandomForestJob {
             System.out.println("An error has been found: " + e.getMessage());
             e.printStackTrace();
         }
-    }
+  }
 }
