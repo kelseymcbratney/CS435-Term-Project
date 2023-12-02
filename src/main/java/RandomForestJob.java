@@ -105,9 +105,11 @@ public class RandomForestJob {
         .withColumn("recall", lit(recall))
         .withColumn("f1", lit(f1));
 
-    // Save the predictions with additional metrics to a file in CSV format
+    // Save the predictions with additional metrics to a file in TSV (Tab-Separated
+    // Values) format
     predictions.select("ReviewId", "indexedLabel", "prediction", "precision", "recall", "f1")
         .write()
+        .option("delimiter", "\t")
         .mode(SaveMode.Overwrite)
         .csv("/SentimentAnalysis/predictions");
 
