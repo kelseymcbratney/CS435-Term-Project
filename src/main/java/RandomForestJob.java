@@ -16,7 +16,6 @@ import static org.apache.spark.sql.functions.lit;
 public class RandomForestJob {
   public static void main(String[] args) {
     // Create a Spark session
-    // Adding Try and catch to handle the erro
     try {
       SparkSession spark = SparkSession.builder()
           .appName("RandomForestExample")
