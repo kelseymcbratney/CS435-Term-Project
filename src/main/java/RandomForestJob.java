@@ -18,7 +18,7 @@ public class RandomForestJob {
     // Create a Spark session
     try {
       SparkSession spark = SparkSession.builder()
-          .appName("RandomForestExample")
+          .appName("RandomForestJob")
           .config("spark.master", "local")
           .config("spark.executor.memory", "32g")
           .config("spark.driver.memory", "4g")
