@@ -107,12 +107,12 @@ public class RandomForestJob {
       double recall = prfEvaluator.setMetricName("weightedRecall").evaluate(predictions);
       double f1 = prfEvaluator.setMetricName("f1").evaluate(predictions);
 
-      System.out.println("Precision = " + precision);
-      System.out.println("Recall = " + recall);
-      System.out.println("F1 Score = " + f1);
-      System.out.println("Training Error Percentage = " + (trainingError * 100) + "%");
-      System.out.println("Testing Error Percentage = " + (testingError * 100) + "%");
-      System.out.println("Test Accuracy = " + accuracy);
+      System.out.println("Precision = %0.2f\n" + precision);
+      System.out.println("Recall = %0.2f\n" + recall);
+      System.out.println("F1 Score = %0.2f\n" + f1);
+      System.out.println("Training Error Percentage = %0.2f\n" + (trainingError * 100) + "%");
+      System.out.println("Testing Error Percentage = %0.2f\n" + (testingError * 100) + "%");
+      System.out.println("Test Accuracy = %0.2f\n" + accuracy);
 
       // Add precision, recall, and f1-score columns to the DataFrame
       predictions = predictions.withColumn("precision", lit(precision))
